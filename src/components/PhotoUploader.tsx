@@ -138,16 +138,77 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   };
 
   const handleProceed = () => {
-    const matchedCategory = targetCategories.find(c => c.id === selectedCategoryId) || targetCategories[0];
-    const basePreset = matchedCategory.modelPreset;
+    let cleanTitle = 'Objet / Produit 3D Reconstruit';
+    if (photos.length > 0) {
+      const rawName = photos[0].name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+      cleanTitle = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    }
+
+    const firstPhotoUrl = photos.length > 0 ? photos[0].url : 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80';
 
     const generatedModel: Model3DData = {
-      ...basePreset,
       id: `recon-${Date.now()}`,
-      title: photos.length > 0 ? `Modèle 3D Restitué — ${matchedCategory.title}` : basePreset.title,
-      thumbnail: photos.length > 0 ? photos[0].url : basePreset.thumbnail,
-      photoCount: photos.length > 0 ? photos.length : basePreset.photoCount,
-      createdAt: new Date().toISOString().split('T')[0]
+      title: cleanTitle,
+      category: 'product',
+      thumbnail: firstPhotoUrl,
+      userImageUrl: firstPhotoUrl,
+      photoCount: photos.length || 1,
+      polygonCount: 84000,
+      optimizedPolyCount: 32000,
+      originalSizeMB: 18.5,
+      optimizedSizeMB: 3.4,
+      createdAt: new Date().toISOString().split('T')[0],
+      arUrl: `https://photo2cine3d.app/ar/recon-${Date.now()}`,
+      qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://photo2cine3d.app/ar/recon-${Date.now()}`,
+      proceduralType: 'neural_depth',
+      materials: {
+        metallic: 0.35,
+        roughness: 0.45,
+        normalMapIntensity: 1.6,
+        brightness: 1.0,
+        contrast: 1.1,
+        saturation: 1.0,
+        ambientOcclusion: 0.9,
+        preset: 'Product',
+        wireframe: false,
+        textureEnhanceAI: true,
+        colorTint: '#111827'
+      },
+      lighting: {
+        preset: 'Studio',
+        keyLightColor: '#ffffff',
+        keyLightIntensity: 3.2,
+        fillLightColor: '#e2e8f0',
+        fillLightIntensity: 2.0,
+        rimLightColor: '#00f2fe',
+        rimLightIntensity: 2.2,
+        hdriPreset: 'Studio',
+        hdriIntensity: 1.2,
+        environmentBlur: 0.4,
+        shadows: true
+      },
+      camera: {
+        dofEnabled: false,
+        focalLength: 50,
+        aperture: 2.8,
+        focusDistance: 3.0,
+        motionBlur: 0.0,
+        cameraShake: 0.0,
+        activePresetMove: 'orbit',
+        projection: 'perspective'
+      },
+      animation: {
+        autoSpin: true,
+        spinSpeed: 0.6,
+        floating: true,
+        floatAmplitude: 0.08,
+        floatSpeed: 1.0,
+        breathing: false,
+        idlePose: 'Default',
+        timelineProgress: 10,
+        isPlaying: true,
+        durationSeconds: 12
+      }
     };
 
     onProceedToReconstruction(generatedModel);

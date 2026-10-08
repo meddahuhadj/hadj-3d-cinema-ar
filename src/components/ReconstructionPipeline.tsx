@@ -82,10 +82,12 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
             setLogs(prev => [...prev, '[SUCCESS] AI 3D Reconstruction completed!']);
             
             let finalModel = activeModel ? { ...activeModel } : undefined;
+            const photoUrl = (photos && photos.length > 0) ? photos[0].url : undefined;
             if (status.modelUrl) {
               if (finalModel) {
                 finalModel.modelUrl = status.modelUrl;
                 if (status.thumbnailUrl) finalModel.thumbnail = status.thumbnailUrl;
+                if (photoUrl) finalModel.userImageUrl = photoUrl;
               } else {
                 finalModel = {
                   id: 'gen-' + Date.now(),
