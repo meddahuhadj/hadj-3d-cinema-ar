@@ -178,35 +178,39 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
       ]);
 
       // Détection intelligente du sujet
-      const fileName = (photos && photos.length > 0 ? photos[0].name : '').toLowerCase();
-      let detectedType: 'rolls_royce' | 'sneaker' | 'camera' | 'executive_chair' | 'chest_freezer' | 'drone' = 'rolls_royce';
-      let modelTitle = 'Rolls-Royce Cullinan';
-      let category: 'vehicle' | 'product' | 'object' = 'vehicle';
-      let colorTint = '#0f172a';
+      const rawName = (photos && photos.length > 0 ? photos[0].name : 'Modèle Reconstruit');
+      const cleanTitle = rawName.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+      const formattedTitle = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
+      const fileName = rawName.toLowerCase();
+      
+      let detectedType: 'rolls_royce' | 'sneaker' | 'camera' | 'executive_chair' | 'chest_freezer' | 'neural_depth' = 'neural_depth';
+      let modelTitle = formattedTitle || 'Modèle 3D Haute-Fidélité';
+      let category: 'vehicle' | 'product' | 'object' = 'product';
+      let colorTint = '#06b6d4';
 
       if (fileName.includes('rolls') || fileName.includes('cullinan') || fileName.includes('car') || fileName.includes('voiture') || fileName.includes('suv') || fileName.includes('auto')) {
-        detectedType = 'rolls_royce';
-        modelTitle = 'Rolls-Royce Cullinan (Black Badge)';
+        detectedType = 'neural_depth';
+        modelTitle = formattedTitle || 'Véhicule 3D';
         category = 'vehicle';
         colorTint = '#111827';
       } else if (fileName.includes('chaise') || fileName.includes('chair') || fileName.includes('fauteuil')) {
-        detectedType = 'executive_chair';
-        modelTitle = 'Fauteuil Direction Ergonomique';
+        detectedType = 'neural_depth';
+        modelTitle = formattedTitle || 'Mobilier Ergonomique';
         category = 'product';
         colorTint = '#1e293b';
       } else if (fileName.includes('congelateur') || fileName.includes('freezer') || fileName.includes('sharbo')) {
-        detectedType = 'chest_freezer';
-        modelTitle = 'Congélateur Horizontal Sharbo 150L';
+        detectedType = 'neural_depth';
+        modelTitle = formattedTitle || 'Électroménager';
         category = 'product';
         colorTint = '#f8fafc';
       } else if (fileName.includes('shoe') || fileName.includes('sneaker') || fileName.includes('basket')) {
-        detectedType = 'sneaker';
-        modelTitle = 'Sneaker Cyberpunk Pulse';
+        detectedType = 'neural_depth';
+        modelTitle = formattedTitle || 'Chaussure Sneaker';
         category = 'product';
         colorTint = '#06b6d4';
       } else if (fileName.includes('camera') || fileName.includes('photo')) {
-        detectedType = 'camera';
-        modelTitle = 'Caméra Ciné Vintage 35mm';
+        detectedType = 'neural_depth';
+        modelTitle = formattedTitle || 'Appareil Optique';
         category = 'object';
         colorTint = '#1e293b';
       }

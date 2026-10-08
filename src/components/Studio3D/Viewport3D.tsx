@@ -147,61 +147,73 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
           }
 
           const aspect = neural.aspectRatio || 1.33;
-          const baseWidth = aspect >= 1 ? 3.2 : 3.2 * aspect;
-          const baseHeight = aspect >= 1 ? 3.2 / aspect : 3.2;
+          const baseWidth = aspect >= 1 ? 3.0 : 3.0 * aspect;
+          const baseHeight = aspect >= 1 ? 3.0 / aspect : 3.0;
 
-          // Front 3D Relief Mesh with Displacement & Normal Map
-          const frontGeo = new THREE.PlaneGeometry(baseWidth, baseHeight, 180, 180);
-          const neuralMat = new THREE.MeshStandardMaterial({
+          // 1. Front 3D Relief Mesh with True Photo PBR Texture & Neural Displacement
+          const frontGeo = new THREE.PlaneGeometry(baseWidth, baseHeight, 220, 220);
+          const neuralFrontMat = new THREE.MeshStandardMaterial({
             map: neural.diffuseTexture,
             displacementMap: neural.depthTexture,
-            displacementScale: 0.55,
-            displacementBias: -0.05,
+            displacementScale: 0.65,
+            displacementBias: -0.08,
             normalMap: neural.normalTexture,
-            normalScale: new THREE.Vector2(material.normalMapIntensity || 1.6, material.normalMapIntensity || 1.6),
+            normalScale: new THREE.Vector2(material.normalMapIntensity || 1.8, material.normalMapIntensity || 1.8),
+            roughnessMap: neural.roughnessTexture,
             metalness: material.metallic,
             roughness: material.roughness,
+            transparent: true,
+            alphaTest: 0.05,
             wireframe: viewMode === 'wireframe' || material.wireframe,
-            side: THREE.DoubleSide
+            side: THREE.FrontSide
           });
-          materialRef.current = neuralMat;
+          materialRef.current = neuralFrontMat;
 
-          const frontMesh = new THREE.Mesh(frontGeo, neuralMat);
+          const frontMesh = new THREE.Mesh(frontGeo, neuralFrontMat);
+          frontMesh.position.set(0, 0, 0.08);
           frontMesh.castShadow = true;
           frontMesh.receiveShadow = true;
           mainGroup.add(frontMesh);
 
-          // Solid Back Shell & Beveled Frame for 360° volume
-          const frameGeo = new THREE.BoxGeometry(baseWidth + 0.1, baseHeight + 0.1, 0.12);
-          const frameMat = new THREE.MeshStandardMaterial({
-            color: 0x0f172a,
-            metalness: 0.9,
-            roughness: 0.2
+          // 2. Back Organic Hull with Inverse Displacement for true 360° Volumetric Feel
+          const backGeo = new THREE.PlaneGeometry(baseWidth, baseHeight, 220, 220);
+          backGeo.rotateY(Math.PI);
+          const neuralBackMat = new THREE.MeshStandardMaterial({
+            map: neural.diffuseTexture,
+            displacementMap: neural.depthTexture,
+            displacementScale: 0.45,
+            displacementBias: -0.06,
+            normalMap: neural.normalTexture,
+            normalScale: new THREE.Vector2(material.normalMapIntensity || 1.4, material.normalMapIntensity || 1.4),
+            roughnessMap: neural.roughnessTexture,
+            metalness: Math.min(1.0, material.metallic + 0.1),
+            roughness: material.roughness,
+            transparent: true,
+            alphaTest: 0.05,
+            wireframe: viewMode === 'wireframe' || material.wireframe,
+            side: THREE.FrontSide
           });
-          const frameMesh = new THREE.Mesh(frameGeo, frameMat);
-          frameMesh.position.set(0, 0, -0.15);
-          frameMesh.castShadow = true;
-          mainGroup.add(frameMesh);
 
-          // Circular Cinematic Pedestal Base
-          const pedestalGeo = new THREE.CylinderGeometry(baseWidth * 0.65, baseWidth * 0.7, 0.15, 32);
-          const pedestalMat = new THREE.MeshStandardMaterial({
-            color: 0x1e293b,
-            metalness: 0.8,
-            roughness: 0.2
+          const backMesh = new THREE.Mesh(backGeo, neuralBackMat);
+          backMesh.position.set(0, 0, -0.08);
+          backMesh.castShadow = true;
+          backMesh.receiveShadow = true;
+          mainGroup.add(backMesh);
+
+          // 3. Volumetric Rim Ring / Beveled Rim Contour
+          const rimThickness = 0.16;
+          const rimGeo = new THREE.BoxGeometry(baseWidth * 0.98, baseHeight * 0.98, rimThickness);
+          const rimMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(material.colorTint || '#1e293b'),
+            metalness: 0.85,
+            roughness: 0.25,
+            wireframe: viewMode === 'wireframe' || material.wireframe,
           });
-          const pedestal = new THREE.Mesh(pedestalGeo, pedestalMat);
-          pedestal.position.set(0, -baseHeight / 2 - 0.15, 0);
-          pedestal.receiveShadow = true;
-          mainGroup.add(pedestal);
+          const rimMesh = new THREE.Mesh(rimGeo, rimMat);
+          rimMesh.position.set(0, 0, 0);
+          rimMesh.castShadow = true;
+          mainGroup.add(rimMesh);
 
-          // Glow ring on pedestal
-          const ringGeo = new THREE.TorusGeometry(baseWidth * 0.64, 0.02, 16, 64);
-          ringGeo.rotateX(Math.PI / 2);
-          const ringMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
-          const ring = new THREE.Mesh(ringGeo, ringMat);
-          ring.position.set(0, -baseHeight / 2 - 0.06, 0);
-          mainGroup.add(ring);
         }).catch(err => {
           console.error('Error creating neural depth 3D model:', err);
         });
