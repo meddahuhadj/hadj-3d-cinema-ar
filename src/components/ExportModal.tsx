@@ -1,5 +1,24 @@
 import React, { useState } from 'react';
-import { Download, X, CheckCircle2, Box, Sparkles, Code2, Share2, Copy, Check, ShoppingCart, MessageCircle, Mail, QrCode } from 'lucide-react';
+import { 
+  Download, 
+  X, 
+  CheckCircle2, 
+  Box, 
+  Sparkles, 
+  Code2, 
+  Share2, 
+  Copy, 
+  Check, 
+  ShoppingCart, 
+  MessageCircle, 
+  Mail, 
+  QrCode,
+  Video,
+  Film,
+  Play,
+  Layers,
+  Smartphone
+} from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Model3DData } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -11,16 +30,23 @@ interface ExportModalProps {
 }
 
 export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, modelData }) => {
-  const [activeTab, setActiveTab] = useState<'3d' | 'ecommerce' | 'share'>('3d');
+  const [activeTab, setActiveTab] = useState<'3d' | 'ecommerce' | 'video' | 'share'>('3d');
   const [downloadingFormat, setDownloadingFormat] = useState<string | null>(null);
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
+  const [videoDuration, setVideoDuration] = useState<number>(6);
+  const [videoRatio, setVideoRatio] = useState<'9:16' | '1:1' | '16:9'>('9:16');
+  const [renderingVideo, setRenderingVideo] = useState(false);
+  const [videoProgress, setVideoProgress] = useState(0);
+
   const { t } = useLanguage();
 
   if (!isOpen) return null;
 
   const modelGlbUrl = modelData.modelUrl || `https://photo2cine3d.app/models/${modelData.id}.glb`;
   const modelUsdzUrl = `https://photo2cine3d.app/models/${modelData.id}.usdz`;
-  const arShareUrl = `https://photo2cine3d.app/ar/${modelData.id.replace('cine-', '')}`;
+  const arShareUrl = typeof window !== 'undefined' 
+    ? `${window.location.origin}/#ar-view?id=${modelData.id.replace('cine-', '')}`
+    : `https://photo2cine3d.app/ar/${modelData.id.replace('cine-', '')}`;
 
   const formats = [
     { format: 'GLB', desc: 'Standard binaire Web3D & WebAR (Android / Chrome)', badge: t('exportRecommended'), size: `${modelData.optimizedSizeMB} MB` },
@@ -82,7 +108,33 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, model
       a.download = `${modelData.title.replace(/\s+/g, '_')}.${fmt.toLowerCase().split(' ')[0]}`;
       a.click();
       setDownloadingFormat(null);
-    }, 1000);
+    }, 800);
+  };
+
+  const handleGenerateVideo = () => {
+    setRenderingVideo(true);
+    setVideoProgress(10);
+    
+    const interval = setInterval(() => {
+      setVideoProgress((prev) => {
+        if (prev >= 90) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setRenderingVideo(false);
+            setVideoProgress(100);
+            // Simulate MP4 trigger
+            const blob = new Blob(['PHOTO2CINE3D_MP4_60FPS_ROTATION_VIDEO'], { type: 'video/mp4' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${modelData.title.replace(/\s+/g, '_')}_360_Cinema.mp4`;
+            a.click();
+          }, 600);
+          return 100;
+        }
+        return prev + 25;
+      });
+    }, 400);
   };
 
   const copyToClipboard = (text: string, id: string) => {
@@ -123,34 +175,44 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, model
         </div>
 
         {/* Tab Navigation */}
-        <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800">
+        <div className="grid grid-cols-4 gap-2 p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800">
           <button
             onClick={() => setActiveTab('3d')}
-            className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === '3d' ? 'bg-cyan-500 text-black shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Box className="w-4 h-4" />
+            <Box className="w-3.5 h-3.5" />
             <span>Fichiers 3D</span>
           </button>
 
           <button
+            onClick={() => setActiveTab('video')}
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'video' ? 'bg-fuchsia-500 text-white shadow-md' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Video className="w-3.5 h-3.5" />
+            <span>Vidéo MP4</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('ecommerce')}
-            className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'ecommerce' ? 'bg-cyan-500 text-black shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <ShoppingCart className="w-4 h-4" />
+            <ShoppingCart className="w-3.5 h-3.5" />
             <span>E-Commerce</span>
           </button>
 
           <button
             onClick={() => setActiveTab('share')}
-            className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'share' ? 'bg-cyan-500 text-black shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Share2 className="w-4 h-4" />
+            <Share2 className="w-3.5 h-3.5" />
             <span>Partage & QR</span>
           </button>
         </div>
@@ -193,7 +255,84 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, model
           </div>
         )}
 
-        {/* Tab 2: E-Commerce Snippets */}
+        {/* Tab 2: Video MP4 Export */}
+        {activeTab === 'video' && (
+          <div className="space-y-4">
+            <div className="p-4 rounded-2xl bg-fuchsia-950/40 border border-fuchsia-800/50 space-y-2">
+              <div className="flex items-center gap-2 text-fuchsia-300 font-bold text-xs">
+                <Film className="w-4 h-4" />
+                <span>Générateur Vidéo Cinématique 360° (TikTok / Reels / Shorts)</span>
+              </div>
+              <p className="text-xs text-slate-300">
+                Générez une animation vidéo fluide en 60 FPS avec éclairage studio et fond transparent ou neutre pour vos campagnes publicitaires.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs text-slate-400 font-medium">Format d'affichage</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(['9:16', '1:1', '16:9'] as const).map((ratio) => (
+                    <button
+                      key={ratio}
+                      onClick={() => setVideoRatio(ratio)}
+                      className={`py-2 px-1 rounded-xl text-xs font-bold border transition-all ${
+                        videoRatio === ratio
+                          ? 'bg-fuchsia-500 text-white border-fuchsia-400'
+                          : 'bg-slate-950 text-slate-400 border-slate-800'
+                      }`}
+                    >
+                      {ratio}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-slate-400 font-medium">Durée de la boucle</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[4, 6, 10].map((sec) => (
+                    <button
+                      key={sec}
+                      onClick={() => setVideoDuration(sec)}
+                      className={`py-2 px-1 rounded-xl text-xs font-bold border transition-all ${
+                        videoDuration === sec
+                          ? 'bg-fuchsia-500 text-white border-fuchsia-400'
+                          : 'bg-slate-950 text-slate-400 border-slate-800'
+                      }`}
+                    >
+                      {sec}s
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center space-y-3">
+              {renderingVideo ? (
+                <div className="space-y-2 py-2">
+                  <div className="flex items-center justify-between text-xs font-mono-code text-fuchsia-400">
+                    <span>Enregistrement du flux Three.js (60 FPS)...</span>
+                    <span>{videoProgress}%</span>
+                  </div>
+                  <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
+                    <div className="bg-gradient-to-r from-fuchsia-500 to-pink-500 h-full transition-all duration-300" style={{ width: `${videoProgress}%` }}></div>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={handleGenerateVideo}
+                  className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white font-extrabold text-sm shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                >
+                  <Play className="w-4 h-4 fill-white" />
+                  <span>Exporter la Vidéo MP4 (60 FPS HD)</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3: E-Commerce Snippets */}
         {activeTab === 'ecommerce' && (
           <div className="space-y-4">
             <div className="p-3.5 rounded-2xl bg-cyan-950/40 border border-cyan-800/60 text-xs text-cyan-300">
@@ -236,7 +375,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, model
           </div>
         )}
 
-        {/* Tab 3: Share & QR */}
+        {/* Tab 4: Share & QR */}
         {activeTab === 'share' && (
           <div className="space-y-6">
             <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
@@ -291,4 +430,3 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, model
     </div>
   );
 };
-
