@@ -34,17 +34,17 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: 40, background: '#07090e', color: '#f8fafc', fontFamily: 'sans-serif', minHeight: '100vh' }}>
-          <h1 style={{ color: '#06b6d4', fontSize: '24px', fontWeight: 'bold' }}>PHOTO2CINE3D — Diagnostic de démarrage</h1>
-          <p style={{ color: '#94a3b8', marginTop: 10 }}>Une erreur s'est produite lors du chargement du composant :</p>
-          <pre style={{ background: '#0f172a', padding: 20, borderRadius: 12, border: '1px solid #1e293b', color: '#f43f5e', overflowX: 'auto', marginTop: 20 }}>
+        <div style={{ padding: 40, background: '#0a0908', color: '#f6f1e7', fontFamily: 'sans-serif', minHeight: '100vh' }}>
+          <h1 style={{ color: '#d4af37', fontSize: '24px', fontWeight: 'bold' }}>PHOTO2CINE3D — Diagnostic de démarrage</h1>
+          <p style={{ color: '#c9bfa8', marginTop: 10 }}>Une erreur s'est produite lors du chargement du composant :</p>
+          <pre style={{ background: '#16130c', padding: 20, borderRadius: 12, border: '1px solid #241f16', color: '#e15241', overflowX: 'auto', marginTop: 20 }}>
             {this.state.error?.toString()}
             {'\n'}
             {this.state.errorInfo?.componentStack}
           </pre>
           <button
             onClick={() => window.location.reload()}
-            style={{ marginTop: 20, padding: '12px 24px', background: '#06b6d4', color: '#000', border: 'none', borderRadius: 8, fontWeight: 'bold', cursor: 'pointer' }}
+            style={{ marginTop: 20, padding: '12px 24px', background: '#d4af37', color: '#000', border: 'none', borderRadius: 8, fontWeight: 'bold', cursor: 'pointer' }}
           >
             Recharger la page
           </button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wand2, X, Send, Sparkles, Check, Terminal, Cpu } from 'lucide-react';
+import { Wand2, X, Send, Check, Terminal } from 'lucide-react';
 import { AIPromptAction } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -46,16 +46,16 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
-      <div className="glass-panel-glow rounded-3xl max-w-xl w-full p-6 border border-cyan-500/40 shadow-2xl space-y-6 relative">
+      <div className="glass-panel-glow rounded-3xl max-w-xl w-full p-6 border border-gold-400/40 shadow-2xl space-y-6 relative">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-cyan-950 text-cyan-400 border border-cyan-800">
+            <div className="p-2.5 rounded-xl bg-gold-950 text-gold-300 border border-gold-800">
               <Wand2 className="w-5 h-5 animate-spin-slow" />
             </div>
             <div>
-              <h3 className="font-heading font-extrabold text-white text-lg">{t('aiAssistantModalTitle')}</h3>
+              <h3 className="font-heading font-semibold text-white text-lg">{t('aiAssistantModalTitle')}</h3>
               <p className="text-xs text-slate-400">{t('aiAssistantSubtitle')}</p>
             </div>
           </div>
@@ -67,7 +67,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
         {/* Input Box */}
         <div className="space-y-3">
           <label className="text-xs text-slate-300 font-semibold">{t('aiPromptLabel')}</label>
-          <div className="flex items-center gap-2 p-2 rounded-2xl bg-slate-950 border border-slate-800 focus-within:border-cyan-500">
+          <div className="flex items-center gap-2 p-2 rounded-2xl bg-slate-950 border border-slate-800 focus-within:border-gold-400">
             <input
               type="text"
               value={inputPrompt}
@@ -79,7 +79,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
             <button
               onClick={() => handleSend()}
               disabled={isProcessing}
-              className="p-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition-all"
+              className="p-3 rounded-xl bg-gold-400 hover:bg-gold-300 text-[#141008] font-bold transition-all"
             >
               <Send className="w-4 h-4" />
             </button>
@@ -94,7 +94,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
               <button
                 key={idx}
                 onClick={() => handleSend(p)}
-                className="text-xs p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 text-left rtl:text-right transition-all"
+                className="text-xs p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-gold-200 hover:border-gold-400/40 text-left rtl:text-right transition-all"
               >
                 ⚡ {p}
               </button>
@@ -106,12 +106,12 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
         {logs.length > 0 && (
           <div className="space-y-2 pt-2 border-t border-slate-800">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
-              <Terminal className="w-3.5 h-3.5 text-cyan-400" /> {t('appliedHistoryTitle')}
+              <Terminal className="w-3.5 h-3.5 text-gold-300" /> {t('appliedHistoryTitle')}
             </span>
             <div className="space-y-2 max-h-36 overflow-y-auto">
               {logs.map((log, i) => (
                 <div key={i} className="p-3 rounded-xl bg-slate-950 border border-slate-900 text-xs space-y-1">
-                  <div className="flex justify-between font-mono-code text-cyan-400">
+                  <div className="flex justify-between font-mono-code text-gold-300">
                     <span>"{log.command}"</span>
                     <span className="text-[10px] text-slate-500">{log.executedAt}</span>
                   </div>

@@ -36,11 +36,11 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
 
     // 1. Scene Setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x07090e);
+    scene.background = new THREE.Color(0x0a0908);
     sceneRef.current = scene;
 
     // Grid Floor
-    const gridHelper = new THREE.GridHelper(20, 20, 0x06b6d4, 0x1e293b);
+    const gridHelper = new THREE.GridHelper(20, 20, 0xd4af37, 0x241f16);
     gridHelper.position.y = -1.5;
     scene.add(gridHelper);
 
@@ -89,7 +89,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
 
     // Create custom mesh material
     const meshMaterial = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(material.colorTint || '#06b6d4'),
+      color: new THREE.Color(material.colorTint || '#d4af37'),
       metalness: material.metallic,
       roughness: material.roughness,
       wireframe: viewMode === 'wireframe' || material.wireframe,
@@ -204,7 +204,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
           const rimThickness = 0.16;
           const rimGeo = new THREE.BoxGeometry(baseWidth * 0.98, baseHeight * 0.98, rimThickness);
           const rimMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(material.colorTint || '#1e293b'),
+            color: new THREE.Color(material.colorTint || '#241f16'),
             metalness: 0.85,
             roughness: 0.25,
             wireframe: viewMode === 'wireframe' || material.wireframe,
@@ -225,7 +225,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
       // High-Fidelity Cyberpunk Sneaker 3D Assembly
       const soleMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.15, metalness: 0.1 });
       const upperMat = meshMaterial;
-      const stripeMat = new THREE.MeshStandardMaterial({ color: 0xec4899, roughness: 0.1, metalness: 0.8 });
+      const stripeMat = new THREE.MeshStandardMaterial({ color: 0xcf9b4a, roughness: 0.1, metalness: 0.8 });
 
       // Curved Sole (Semelle)
       const soleGeo = new THREE.BoxGeometry(2.6, 0.35, 1.1);
@@ -280,14 +280,14 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
 
       const glassGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.1, 32);
       glassGeo.rotateX(Math.PI / 2);
-      const glassMesh = new THREE.Mesh(glassGeo, new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, transmission: 0.9, roughness: 0.05, metalness: 0.1 }));
+      const glassMesh = new THREE.Mesh(glassGeo, new THREE.MeshPhysicalMaterial({ color: 0xe8c87a, transmission: 0.9, roughness: 0.05, metalness: 0.1 }));
       glassMesh.position.set(0, 0, 0.9);
       mainGroup.add(glassMesh);
     } else if (type === 'chair' || type === 'executive_chair') {
       // Build Ergonomic Executive Office Chair (Matching user photo)
       // Leather Material for Cushions
       const leatherMat = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(material.colorTint || '#1e293b'),
+        color: new THREE.Color(material.colorTint || '#241f16'),
         roughness: 0.3,
         metalness: 0.15,
         wireframe: viewMode === 'wireframe' || material.wireframe
@@ -295,7 +295,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
 
       // Chrome Material for Armrests and Base
       const chromeMat = new THREE.MeshStandardMaterial({
-        color: 0xe2e8f0,
+        color: 0xddd4c0,
         metalness: 0.9,
         roughness: 0.1
       });
@@ -363,21 +363,21 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
         // Wheel
         const wheelGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.06, 16);
         wheelGeo.rotateZ(Math.PI / 2);
-        const wheelMesh = new THREE.Mesh(wheelGeo, new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.5 }));
+        const wheelMesh = new THREE.Mesh(wheelGeo, new THREE.MeshStandardMaterial({ color: 0x16130c, roughness: 0.5 }));
         wheelMesh.position.set(Math.sin(angle) * 1.05, -0.82, Math.cos(angle) * 1.05);
         mainGroup.add(wheelMesh);
       }
     } else if (type === 'freezer' || type === 'chest_freezer') {
       // Build Congélateur Horizontal Sharbo 150L 3D Assembly (Matching user photo)
       const freezerBodyMat = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(material.colorTint || '#f8fafc'),
+        color: new THREE.Color(material.colorTint || '#f6f1e7'),
         roughness: 0.25,
         metalness: 0.1,
         wireframe: viewMode === 'wireframe' || material.wireframe
       });
 
       const handleMat = new THREE.MeshStandardMaterial({
-        color: 0xc8d1dc,
+        color: 0xcfc5ae,
         metalness: 0.8,
         roughness: 0.2
       });
@@ -411,7 +411,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
       // Keyhole detail
       const keyholeGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.04, 12);
       keyholeGeo.rotateX(Math.PI / 2);
-      const keyholeMesh = new THREE.Mesh(keyholeGeo, new THREE.MeshBasicMaterial({ color: 0x0f172a }));
+      const keyholeMesh = new THREE.Mesh(keyholeGeo, new THREE.MeshBasicMaterial({ color: 0x16130c }));
       keyholeMesh.position.set(0, 0.68, 0.75);
       mainGroup.add(keyholeMesh);
 
@@ -423,7 +423,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
 
       // 5. Front Control Panel Display & Energy Label (Termostat & LED Keep Fresh)
       const panelGeo = new THREE.BoxGeometry(0.7, 0.45, 0.02);
-      const panelMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.1 });
+      const panelMat = new THREE.MeshStandardMaterial({ color: 0x8a6a1f, roughness: 0.1 });
       const panelMesh = new THREE.Mesh(panelGeo, panelMat);
       panelMesh.position.set(0.4, 0.1, 0.66);
       mainGroup.add(panelMesh);
@@ -431,14 +431,14 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
       // 6. Bottom Rubber Corner Feet (Pieds de soutien)
       [[-1.05, 1.05], [1.05, 1.05], [-1.05, -1.05], [1.05, -1.05]].forEach(pos => {
         const footGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.1, 16);
-        const footMesh = new THREE.Mesh(footGeo, new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6 }));
+        const footMesh = new THREE.Mesh(footGeo, new THREE.MeshStandardMaterial({ color: 0x16130c, roughness: 0.6 }));
         footMesh.position.set(pos[0], -0.72, pos[1] * 0.55);
         mainGroup.add(footMesh);
       });
     } else if (type === 'car' || type === 'vehicle' || type === 'rolls_royce' || type === 'suv') {
       // High-Fidelity Rolls-Royce Cullinan / Luxury SUV 3D Assembly
       const carPaintMat = new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color(material.colorTint || '#1e293b'),
+        color: new THREE.Color(material.colorTint || '#241f16'),
         metalness: material.metallic || 0.85,
         roughness: material.roughness || 0.15,
         clearcoat: 1.0,
@@ -448,13 +448,13 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
       });
 
       const chromeMat = new THREE.MeshStandardMaterial({
-        color: 0xf1f5f9,
+        color: 0xf6f1e7,
         metalness: 0.95,
         roughness: 0.05
       });
 
       const glassMat = new THREE.MeshPhysicalMaterial({
-        color: 0x0f172a,
+        color: 0x16130c,
         transmission: 0.85,
         roughness: 0.05,
         metalness: 0.1,
@@ -463,14 +463,14 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
       });
 
       const tireMat = new THREE.MeshStandardMaterial({
-        color: 0x18181b,
+        color: 0x17140e,
         roughness: 0.7,
         metalness: 0.1
       });
 
       const headlightMat = new THREE.MeshStandardMaterial({
-        color: 0xe0f2fe,
-        emissive: 0x38bdf8,
+        color: 0xf5e2a8,
+        emissive: 0xe8c87a,
         emissiveIntensity: 0.8,
         roughness: 0.1
       });
@@ -604,7 +604,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
         // Floating Center Hub (Centre de roue RR)
         const hubGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.28, 16);
         hubGeo.rotateX(Math.PI / 2);
-        const hub = new THREE.Mesh(hubGeo, new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9 }));
+        const hub = new THREE.Mesh(hubGeo, new THREE.MeshStandardMaterial({ color: 0x16130c, metalness: 0.9 }));
         hub.position.set(wx, wy, wz);
         mainGroup.add(hub);
       });
@@ -626,7 +626,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
 
       // Camera Eye Lens
       const camEyeGeo = new THREE.SphereGeometry(0.3, 16, 16);
-      const camEyeMesh = new THREE.Mesh(camEyeGeo, new THREE.MeshPhysicalMaterial({ color: 0x06b6d4, roughness: 0.0, metalness: 0.9, emissive: 0x0284c7, emissiveIntensity: 0.6 }));
+      const camEyeMesh = new THREE.Mesh(camEyeGeo, new THREE.MeshPhysicalMaterial({ color: 0xd4af37, roughness: 0.0, metalness: 0.9, emissive: 0x8a6a1f, emissiveIntensity: 0.6 }));
       camEyeMesh.position.set(0.8, -0.1, 0);
       mainGroup.add(camEyeMesh);
 
@@ -634,19 +634,19 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
       [[-0.9, 0.9], [0.9, 0.9], [-0.9, -0.9], [0.9, -0.9]].forEach(pos => {
         const armGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.4);
         armGeo.rotateZ(Math.PI / 4);
-        const armMesh = new THREE.Mesh(armGeo, new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 }));
+        const armMesh = new THREE.Mesh(armGeo, new THREE.MeshStandardMaterial({ color: 0x241f16, metalness: 0.8, roughness: 0.2 }));
         armMesh.position.set(pos[0] * 0.7, 0, pos[1] * 0.7);
         mainGroup.add(armMesh);
 
         // Rotor Motor Engine Pod
         const motorGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.25, 16);
-        const motorMesh = new THREE.Mesh(motorGeo, new THREE.MeshStandardMaterial({ color: 0x3b82f6, metalness: 0.9, roughness: 0.1 }));
+        const motorMesh = new THREE.Mesh(motorGeo, new THREE.MeshStandardMaterial({ color: 0xa8842c, metalness: 0.9, roughness: 0.1 }));
         motorMesh.position.set(pos[0] * 1.1, 0.1, pos[1] * 1.1);
         mainGroup.add(motorMesh);
 
         // Spinning Propellor Blade
         const propGeo = new THREE.BoxGeometry(0.9, 0.02, 0.1);
-        const propMesh = new THREE.Mesh(propGeo, new THREE.MeshStandardMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.85 }));
+        const propMesh = new THREE.Mesh(propGeo, new THREE.MeshStandardMaterial({ color: 0xe8c87a, transparent: true, opacity: 0.85 }));
         propMesh.position.set(pos[0] * 1.1, 0.24, pos[1] * 1.1);
         mainGroup.add(propMesh);
       });
@@ -656,7 +656,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
 
     // Animation Loop
     let animationFrameId: number;
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     const animate = () => {
       const delta = clock.getDelta();

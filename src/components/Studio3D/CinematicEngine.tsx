@@ -12,14 +12,14 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
   const { t } = useLanguage();
 
   const lightingPresets = [
-    { id: 'Hollywood', label: t('lightHollywood'), key: '#ffffff', fill: '#94a3b8', rim: '#f59e0b', hdri: 'Studio Neutral' },
-    { id: 'Cyberpunk', label: t('lightCyberpunk'), key: '#06b6d4', fill: '#ec4899', rim: '#38bdf8', hdri: 'Neon City Night' },
+    { id: 'Hollywood', label: t('lightHollywood'), key: '#ffffff', fill: '#c9bfa8', rim: '#f59e0b', hdri: 'Studio Neutral' },
+    { id: 'Cyberpunk', label: t('lightCyberpunk'), key: '#d4af37', fill: '#cf9b4a', rim: '#e8c87a', hdri: 'Neon City Night' },
     { id: 'Luxury', label: t('lightLuxury'), key: '#fbbf24', fill: '#f59e0b', rim: '#d97706', hdri: 'Golden Hour' },
-    { id: 'Dark Cinema', label: t('lightDarkCinema'), key: '#38bdf8', fill: '#1e293b', rim: '#8b5cf6', hdri: 'Moody Dark' },
-    { id: 'Sci-Fi', label: t('lightSciFi'), key: '#3b82f6', fill: '#6366f1', rim: '#60a5fa', hdri: 'Hangar Blue' },
+    { id: 'Dark Cinema', label: t('lightDarkCinema'), key: '#e8c87a', fill: '#241f16', rim: '#f5e2a8', hdri: 'Moody Dark' },
+    { id: 'Sci-Fi', label: t('lightSciFi'), key: '#a8842c', fill: '#8a6a1f', rim: '#e8c87a', hdri: 'Hangar Blue' },
     { id: 'Golden Hour', label: t('lightGoldenHour'), key: '#f97316', fill: '#fbbf24', rim: '#ea580c', hdri: 'Outdoor Sunset' },
-    { id: 'Studio', label: t('lightStudio'), key: '#ffffff', fill: '#cbd5e1', rim: '#ffffff', hdri: 'Soft Studio' },
-    { id: 'Documentary', label: t('lightDocumentary'), key: '#fef08a', fill: '#94a3b8', rim: '#e2e8f0', hdri: 'Natural Daylight' },
+    { id: 'Studio', label: t('lightStudio'), key: '#ffffff', fill: '#cfc5ae', rim: '#ffffff', hdri: 'Soft Studio' },
+    { id: 'Documentary', label: t('lightDocumentary'), key: '#fef08a', fill: '#c9bfa8', rim: '#ddd4c0', hdri: 'Natural Daylight' },
   ];
 
   const applyLightingPreset = (presetObj: typeof lightingPresets[0]) => {
@@ -36,10 +36,10 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 className="font-heading font-bold text-white text-sm flex items-center gap-2">
-          <Film className="w-4 h-4 text-fuchsia-400" /> {t('cinematicEngineTitle')}
+        <h3 className="font-heading font-semibold text-white text-base flex items-center gap-2">
+          <Film className="w-4 h-4 text-gold-300" /> {t('cinematicEngineTitle')}
         </h3>
-        <span className="text-[10px] font-mono-code text-fuchsia-400 bg-fuchsia-950 px-2 py-0.5 rounded border border-fuchsia-800">
+        <span className="text-[10px] font-mono-code text-gold-300 bg-gold-950 px-2 py-0.5 rounded border border-gold-800">
           {t('studioLightingBadge')}
         </span>
       </div>
@@ -52,7 +52,7 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
               key={p.id}
               onClick={() => applyLightingPreset(p)}
               className={`p-2.5 rounded-xl border text-left transition-all flex items-center justify-between ${
-                lighting.preset === p.id ? 'bg-fuchsia-950/60 border-fuchsia-400 text-fuchsia-300' : 'bg-slate-900/60 border-slate-800 text-slate-300'
+                lighting.preset === p.id ? 'bg-gold-950/60 border-gold-300 text-gold-200' : 'bg-slate-900/60 border-slate-800 text-slate-300'
               }`}
             >
               <div className="flex items-center gap-2">
@@ -63,7 +63,7 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
                 </div>
                 <span className="text-xs font-semibold truncate">{p.label}</span>
               </div>
-              {lighting.preset === p.id && <Check className="w-3.5 h-3.5 text-fuchsia-400" />}
+              {lighting.preset === p.id && <Check className="w-3.5 h-3.5 text-gold-300" />}
             </button>
           ))}
         </div>
@@ -73,7 +73,7 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
         <div className="space-y-1.5">
           <div className="flex justify-between text-xs text-slate-300">
             <span className="flex items-center gap-1.5"><Sun className="w-3.5 h-3.5 text-amber-400" /> {t('keyLightLabel')}</span>
-            <span className="font-mono-code text-fuchsia-400">{lighting.keyLightIntensity.toFixed(1)}x</span>
+            <span className="font-mono-code text-gold-300">{lighting.keyLightIntensity.toFixed(1)}x</span>
           </div>
           <input
             type="range"
@@ -88,8 +88,8 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
 
         <div className="space-y-1.5">
           <div className="flex justify-between text-xs text-slate-300">
-            <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-cyan-400" /> {t('fillLightLabel')}</span>
-            <span className="font-mono-code text-fuchsia-400">{lighting.fillLightIntensity.toFixed(1)}x</span>
+            <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-gold-300" /> {t('fillLightLabel')}</span>
+            <span className="font-mono-code text-gold-300">{lighting.fillLightIntensity.toFixed(1)}x</span>
           </div>
           <input
             type="range"
@@ -104,8 +104,8 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
 
         <div className="space-y-1.5">
           <div className="flex justify-between text-xs text-slate-300">
-            <span className="flex items-center gap-1.5"><Flame className="w-3.5 h-3.5 text-pink-400" /> {t('rimLightLabel')}</span>
-            <span className="font-mono-code text-fuchsia-400">{lighting.rimLightIntensity.toFixed(1)}x</span>
+            <span className="flex items-center gap-1.5"><Flame className="w-3.5 h-3.5 text-gold-500" /> {t('rimLightLabel')}</span>
+            <span className="font-mono-code text-gold-300">{lighting.rimLightIntensity.toFixed(1)}x</span>
           </div>
           <input
             type="range"
@@ -120,11 +120,11 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
 
         <div className="flex items-center justify-between pt-2 border-t border-slate-800">
           <span className="text-xs text-slate-300 flex items-center gap-2">
-            <Moon className="w-3.5 h-3.5 text-indigo-400" /> {t('softShadowsToggle')}
+            <Moon className="w-3.5 h-3.5 text-gold-300" /> {t('softShadowsToggle')}
           </span>
           <button
             onClick={() => setLighting(prev => ({ ...prev, shadows: !prev.shadows }))}
-            className={`w-10 h-6 rounded-full p-1 transition-colors ${lighting.shadows ? 'bg-fuchsia-500' : 'bg-slate-800'}`}
+            className={`w-10 h-6 rounded-full p-1 transition-colors ${lighting.shadows ? 'bg-gold-600' : 'bg-slate-800'}`}
           >
             <div className={`w-4 h-4 rounded-full bg-white transition-transform ${lighting.shadows ? 'translate-x-4' : ''}`} />
           </button>

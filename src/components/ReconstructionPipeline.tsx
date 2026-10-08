@@ -120,9 +120,9 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
                     preset: 'Studio',
                     keyLightColor: '#ffffff',
                     keyLightIntensity: 3.2,
-                    fillLightColor: '#e2e8f0',
+                    fillLightColor: '#ddd4c0',
                     fillLightIntensity: 2.0,
-                    rimLightColor: '#00f2fe',
+                    rimLightColor: '#f5e2a8',
                     rimLightIntensity: 1.8,
                     hdriPreset: 'Studio',
                     hdriIntensity: 1.2,
@@ -185,36 +185,30 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
       const formattedTitle = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
       const fileName = rawName.toLowerCase();
       
-      let detectedType: 'rolls_royce' | 'sneaker' | 'camera' | 'executive_chair' | 'chest_freezer' | 'neural_depth' = 'neural_depth';
       let modelTitle = formattedTitle || 'Modèle 3D Haute-Fidélité';
       let category: 'vehicle' | 'product' | 'object' = 'product';
-      let colorTint = '#06b6d4';
+      let colorTint = '#d4af37';
 
       if (fileName.includes('rolls') || fileName.includes('cullinan') || fileName.includes('car') || fileName.includes('voiture') || fileName.includes('suv') || fileName.includes('auto')) {
-        detectedType = 'neural_depth';
         modelTitle = formattedTitle || 'Véhicule 3D';
         category = 'vehicle';
-        colorTint = '#111827';
+        colorTint = '#17140e';
       } else if (fileName.includes('chaise') || fileName.includes('chair') || fileName.includes('fauteuil')) {
-        detectedType = 'neural_depth';
         modelTitle = formattedTitle || 'Mobilier Ergonomique';
         category = 'product';
-        colorTint = '#1e293b';
+        colorTint = '#241f16';
       } else if (fileName.includes('congelateur') || fileName.includes('freezer') || fileName.includes('sharbo')) {
-        detectedType = 'neural_depth';
         modelTitle = formattedTitle || 'Électroménager';
         category = 'product';
-        colorTint = '#f8fafc';
+        colorTint = '#f6f1e7';
       } else if (fileName.includes('shoe') || fileName.includes('sneaker') || fileName.includes('basket')) {
-        detectedType = 'neural_depth';
         modelTitle = formattedTitle || 'Chaussure Sneaker';
         category = 'product';
-        colorTint = '#06b6d4';
+        colorTint = '#d4af37';
       } else if (fileName.includes('camera') || fileName.includes('photo')) {
-        detectedType = 'neural_depth';
         modelTitle = formattedTitle || 'Appareil Optique';
         category = 'object';
-        colorTint = '#1e293b';
+        colorTint = '#241f16';
       }
 
       setLogs(prev => [...prev, `[NEURAL ENGINE] Sujet identifié : ${modelTitle} (${category})`]);
@@ -272,9 +266,9 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
               preset: 'Cinematic Studio',
               keyLightColor: '#ffffff',
               keyLightIntensity: 3.5,
-              fillLightColor: '#38bdf8',
+              fillLightColor: '#e8c87a',
               fillLightIntensity: 2.2,
-              rimLightColor: '#00f2fe',
+              rimLightColor: '#f5e2a8',
               rimLightIntensity: 2.5,
               hdriPreset: 'Hollywood Studio',
               hdriIntensity: 1.4,
@@ -317,10 +311,10 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       <div className="border-b border-slate-800 pb-6">
-        <div className="flex items-center gap-2 text-cyan-400 font-mono-code text-xs font-bold uppercase tracking-wider mb-1">
-          <Cpu className="w-4 h-4" /> {t('reconstructHeaderTag')}
+        <div className="flex items-center gap-2.5 font-mono-code text-[11px] uppercase tracking-[0.28em] text-amber-200/70 mb-2">
+          <Cpu className="w-3.5 h-3.5 text-gold-300" /> {t('reconstructHeaderTag')}
         </div>
-        <h2 className="text-3xl font-extrabold text-white tracking-tight">
+        <h2 className="text-4xl sm:text-5xl font-semibold text-white tracking-tight">
           {t('reconstructTitle')}
         </h2>
         <p className="text-slate-400 text-sm mt-1">
@@ -331,37 +325,37 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
       {/* AI Engine Selection Bar */}
       <div className="flex flex-wrap items-center gap-3 p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
         <span className="text-xs font-bold text-slate-400 font-mono-code flex items-center gap-1.5 px-2">
-          <Sparkles className="w-4 h-4 text-cyan-400" /> MOTEUR IA 3D :
+          <Sparkles className="w-4 h-4 text-gold-300" /> MOTEUR IA 3D :
         </span>
         <button
           onClick={() => setSelectedProvider('huggingface')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             selectedProvider === 'huggingface'
-              ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 border border-cyan-400'
+              ? 'bg-gradient-to-r from-gold-200 to-gold-400 text-[#141008] shadow-lg shadow-gold-400/25 border border-gold-300/70'
               : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'
           }`}
         >
-          <Zap className="w-3.5 h-3.5 text-amber-300" /> Hugging Face Trellis (Gratuit & Open-Source)
+          <Zap className="w-3.5 h-3.5 text-[#141008]" /> Hugging Face Trellis (Gratuit & Open-Source)
         </button>
         <button
           onClick={() => setSelectedProvider('tripo')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             selectedProvider === 'tripo'
-              ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/25 border border-purple-400'
+              ? 'bg-gradient-to-r from-gold-400 to-gold-600 text-[#141008] shadow-lg shadow-gold-500/25 border border-gold-500/70'
               : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'
           }`}
         >
-          <Cpu className="w-3.5 h-3.5" /> Tripo3D API
+          <Cpu className="w-3.5 h-3.5 text-[#fdf9ee]" /> Tripo3D API
         </button>
         <button
           onClick={() => setSelectedProvider('meshy')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             selectedProvider === 'meshy'
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 border border-emerald-400'
+              ? 'bg-gradient-to-r from-gold-600 to-gold-700 text-[#fdf9ee] shadow-lg shadow-gold-600/25 border border-gold-700'
               : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'
           }`}
         >
-          <Box className="w-3.5 h-3.5" /> Meshy.ai API
+          <Box className="w-3.5 h-3.5 text-[#fdf9ee]" /> Meshy.ai API
         </button>
       </div>
 
@@ -374,20 +368,20 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
               key={mode.id}
               onClick={() => !isProcessing && setSelectedMode(mode.id as ReconstructionMode)}
               className={`p-5 rounded-2xl cursor-pointer transition-all border relative overflow-hidden ${
-                isSelected ? 'glass-panel-glow border-cyan-400 bg-cyan-950/30' : 'glass-card border-slate-800'
+                isSelected ? 'glass-panel-glow border-gold-300 bg-gold-950/30' : 'glass-card border-slate-800'
               }`}
             >
               <div className="flex items-center justify-between mb-3">
-                <div className={`p-2.5 rounded-xl ${isSelected ? 'bg-cyan-500 text-black' : 'bg-slate-800 text-cyan-400'}`}>
+                <div className={`p-2.5 rounded-xl ${isSelected ? 'bg-gold-400 text-[#141008]' : 'bg-slate-800 text-gold-300'}`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <span className={`text-[10px] font-mono-code px-2 py-0.5 rounded-full font-bold border ${
-                  isSelected ? 'bg-cyan-900 text-cyan-300 border-cyan-700' : 'bg-slate-900 text-slate-400 border-slate-800'
+                  isSelected ? 'bg-gold-900 text-gold-200 border-gold-600' : 'bg-slate-900 text-slate-400 border-slate-800'
                 }`}>
                   {mode.badge}
                 </span>
               </div>
-              <h3 className="font-heading font-bold text-white text-base mb-1">{mode.title}</h3>
+              <h3 className="font-heading font-semibold text-lg text-white mb-1">{mode.title}</h3>
               <p className="text-xs text-slate-400 leading-relaxed">{mode.desc}</p>
             </div>
           );
@@ -397,8 +391,8 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
       <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-cyan-400" /> {t('synthesisTitle')}
+            <h3 className="text-2xl font-semibold text-white flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-gold-300" /> {t('synthesisTitle')}
             </h3>
             <p className="text-xs text-slate-400">{t('globalProgress')}: {progress}%</p>
           </div>
@@ -409,17 +403,17 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
             className={`flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm transition-all ${
               isProcessing
                 ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
-                : 'bg-gradient-to-r from-cyan-500 via-indigo-500 to-fuchsia-500 text-white shadow-xl shadow-cyan-500/25 hover:scale-[1.02]'
+                : 'bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600 text-[#141008] shadow-xl shadow-gold-400/30 hover:scale-[1.02]'
             }`}
           >
             {isProcessing ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin text-cyan-400" />
+                <RefreshCw className="w-4 h-4 animate-spin text-gold-300" />
                 <span>{t('processingAI')}</span>
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 fill-white" />
+                <Play className="w-4 h-4 fill-[#141008]" />
                 <span>{t('launchReconstructAction')}</span>
               </>
             )}
@@ -428,7 +422,7 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
 
         <div className="w-full h-4 rounded-full bg-slate-900 border border-slate-800 overflow-hidden relative">
           <div
-            className="h-full bg-gradient-to-r from-cyan-500 via-indigo-500 to-fuchsia-500 transition-all duration-300"
+            className="h-full bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -441,17 +435,17 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
               <div
                 key={idx}
                 className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
-                  isCurrent ? 'bg-cyan-950/40 border-cyan-500/50' : isCompleted ? 'bg-slate-900/60 border-slate-800 text-slate-300' : 'bg-slate-950/30 border-slate-900 text-slate-600'
+                  isCurrent ? 'bg-gold-950/40 border-gold-400/50' : isCompleted ? 'bg-slate-900/60 border-slate-800 text-slate-300' : 'bg-slate-950/30 border-slate-900 text-slate-600'
                 }`}
               >
                 <div className="flex items-center gap-3.5">
                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs ${
-                    isCompleted ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : isCurrent ? 'bg-cyan-500 text-black animate-pulse' : 'bg-slate-900 text-slate-600'
+                    isCompleted ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : isCurrent ? 'bg-gold-400 text-[#141008] animate-pulse' : 'bg-slate-900 text-slate-600'
                   }`}>
                     {isCompleted ? <Check className="w-4 h-4" /> : idx + 1}
                   </div>
                   <div>
-                    <h4 className={`text-sm font-semibold ${isCurrent ? 'text-cyan-300' : isCompleted ? 'text-white' : 'text-slate-500'}`}>
+                    <h4 className={`text-sm font-semibold ${isCurrent ? 'text-gold-200' : isCompleted ? 'text-white' : 'text-slate-500'}`}>
                       {step.title}
                     </h4>
                     <p className="text-xs text-slate-400">{step.desc}</p>
@@ -462,7 +456,7 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
                   {isCompleted ? (
                     <span className="text-emerald-400 flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5" /> {t('completedStatus')}</span>
                   ) : isCurrent ? (
-                    <span className="text-cyan-400 animate-pulse">{t('calculatingStatus')}</span>
+                    <span className="text-gold-300 animate-pulse">{t('calculatingStatus')}</span>
                   ) : (
                     <span className="text-slate-600">{t('waitingStatus')}</span>
                   )}
@@ -474,10 +468,10 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
 
         <div className="bg-slate-950 rounded-2xl p-4 border border-slate-800 font-mono-code text-xs space-y-1.5 max-h-44 overflow-y-auto">
           <div className="flex items-center gap-2 text-slate-500 pb-2 border-b border-slate-900 text-[11px]">
-            <Terminal className="w-3.5 h-3.5 text-cyan-400" /> {t('executionLogs')}
+            <Terminal className="w-3.5 h-3.5 text-gold-300" /> {t('executionLogs')}
           </div>
           {logs.map((log, i) => (
-            <div key={i} className="text-cyan-400/90 leading-relaxed">{log}</div>
+            <div key={i} className={`leading-relaxed ${log.includes('[ERROR]') ? 'text-rose-400' : log.includes('[SUCCESS]') ? 'text-emerald-400' : log.includes('[WARNING]') ? 'text-amber-300' : 'text-gold-300/70'}`}>{log}</div>
           ))}
         </div>
 

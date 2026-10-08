@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, QrCode, Smartphone, Sparkles, Check, Code, ExternalLink, Tag, Box, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Smartphone, Check, Code } from 'lucide-react';
 import { Model3DData } from '../../types';
 import { DEMO_PRODUCT_CONFIG } from '../../data/demoModels';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -10,7 +10,7 @@ interface ProductARModeProps {
 }
 
 export const ProductARMode: React.FC<ProductARModeProps> = ({ modelData, onOpenAR }) => {
-  const [config, setConfig] = useState(DEMO_PRODUCT_CONFIG);
+  const [config] = useState(DEMO_PRODUCT_CONFIG);
   const [copiedCode, setCopiedCode] = useState(false);
   const { t } = useLanguage();
 
@@ -31,10 +31,10 @@ export const ProductARMode: React.FC<ProductARModeProps> = ({ modelData, onOpenA
       
       {/* Header */}
       <div className="border-b border-slate-800 pb-6">
-        <div className="flex items-center gap-2 text-cyan-400 font-mono-code text-xs font-bold uppercase tracking-wider mb-1">
-          <ShoppingBag className="w-4 h-4" /> {t('productARHeaderTag')}
+        <div className="flex items-center gap-2.5 font-mono-code text-[11px] uppercase tracking-[0.28em] text-amber-200/70 mb-2">
+          <ShoppingBag className="w-3.5 h-3.5 text-gold-300" /> {t('productARHeaderTag')}
         </div>
-        <h2 className="text-3xl font-extrabold text-white tracking-tight">
+        <h2 className="text-4xl sm:text-5xl font-semibold text-white tracking-tight">
           {t('productARTitle')}
         </h2>
         <p className="text-slate-400 text-sm mt-1">
@@ -48,10 +48,10 @@ export const ProductARMode: React.FC<ProductARModeProps> = ({ modelData, onOpenA
         {/* Left Column: Interactive Product Card Simulator (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           
-          <div className="glass-panel-glow rounded-3xl p-6 border border-cyan-500/30 space-y-6">
+          <div className="glass-panel-glow rounded-3xl p-6 border border-gold-400/30 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <span className="text-xs font-mono-code text-cyan-400 uppercase font-bold">{t('previewWidgetTitle')}</span>
-              <span className="px-2.5 py-0.5 rounded-full bg-rose-950 text-rose-300 text-[10px] font-bold border border-rose-800">
+              <span className="text-xs font-mono-code text-gold-300 uppercase font-bold">{t('previewWidgetTitle')}</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 text-[10px] font-bold border border-amber-800">
                 {config.badge}
               </span>
             </div>
@@ -67,7 +67,7 @@ export const ProductARMode: React.FC<ProductARModeProps> = ({ modelData, onOpenA
 
                 <button
                   onClick={onOpenAR}
-                  className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-black transition-all shadow-lg shadow-cyan-500/30"
+                  className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gold-400 hover:bg-gold-300 text-[#141008] transition-all shadow-lg shadow-gold-400/30"
                 >
                   <Smartphone className="w-4 h-4" /> {t('viewInYourRoom')}
                 </button>
@@ -76,10 +76,10 @@ export const ProductARMode: React.FC<ProductARModeProps> = ({ modelData, onOpenA
               <div className="p-6 space-y-4 bg-slate-900">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-white">{config.productName}</h3>
+                    <h3 className="text-xl font-semibold text-white">{config.productName}</h3>
                     <p className="text-xs text-slate-400 font-mono-code">{t('skuLabel')} {config.sku}</p>
                   </div>
-                  <span className="text-2xl font-extrabold text-cyan-400 font-mono-code">{config.price}</span>
+                  <span className="text-2xl font-bold text-gold-300 font-mono-code">{config.price}</span>
                 </div>
 
                 {/* Color Variants Simulation */}
@@ -87,16 +87,16 @@ export const ProductARMode: React.FC<ProductARModeProps> = ({ modelData, onOpenA
                   <div className="space-y-1.5">
                     <span className="text-xs font-semibold text-slate-300">{t('colorVariantsLabel')}</span>
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-cyan-500 ring-2 ring-cyan-300 cursor-pointer" />
-                      <span className="w-6 h-6 rounded-full bg-indigo-500 cursor-pointer" />
-                      <span className="w-6 h-6 rounded-full bg-fuchsia-500 cursor-pointer" />
+                      <span className="w-6 h-6 rounded-full bg-gold-400 ring-2 ring-gold-200 cursor-pointer" />
+                      <span className="w-6 h-6 rounded-full bg-gold-500 cursor-pointer" />
+                      <span className="w-6 h-6 rounded-full bg-gold-600 cursor-pointer" />
                       <span className="w-6 h-6 rounded-full bg-slate-800 border border-slate-600 cursor-pointer" />
                     </div>
                   </div>
                 )}
 
                 {/* Buy Button */}
-                <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-emerald-500 hover:bg-emerald-400 text-black shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
+                <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-emerald-500 hover:bg-emerald-400 text-[#0a0908] shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2">
                   <ShoppingBag className="w-4 h-4" />
                   <span>{t('buyNowBtn')}</span>
                 </button>
@@ -111,8 +111,8 @@ export const ProductARMode: React.FC<ProductARModeProps> = ({ modelData, onOpenA
         <div className="lg:col-span-5 space-y-6">
           
           <div className="glass-panel rounded-3xl p-6 border border-slate-800 space-y-6">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Code className="w-5 h-5 text-cyan-400" /> {t('integrationTitle')}
+            <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+              <Code className="w-5 h-5 text-gold-300" /> {t('integrationTitle')}
             </h3>
             <p className="text-xs text-slate-400">
               {t('integrationSubtitle')}
@@ -124,14 +124,14 @@ export const ProductARMode: React.FC<ProductARModeProps> = ({ modelData, onOpenA
                 <span>{t('jsCodeIntegration')}</span>
                 <button
                   onClick={copyEmbed}
-                  className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-bold"
+                  className="text-gold-300 hover:text-gold-200 flex items-center gap-1 font-bold"
                 >
                   {copiedCode ? <Check className="w-3.5 h-3.5" /> : <Code className="w-3.5 h-3.5" />}
                   <span>{copiedCode ? t('copiedBtn') : t('copyScriptBtn')}</span>
                 </button>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-mono-code text-cyan-300/90 leading-relaxed overflow-x-auto">
+              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-mono-code text-gold-200/90 leading-relaxed overflow-x-auto">
                 {embedScript}
               </div>
             </div>

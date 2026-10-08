@@ -18,10 +18,10 @@ export const AnimationStudio: React.FC<AnimationStudioProps> = ({ animation, set
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 className="font-heading font-bold text-white text-sm flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-fuchsia-400" /> {t('animationStudioTitle')}
+        <h3 className="font-heading font-semibold text-white text-base flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-gold-300" /> {t('animationStudioTitle')}
         </h3>
-        <span className="text-[10px] font-mono-code text-fuchsia-400 bg-fuchsia-950 px-2 py-0.5 rounded border border-fuchsia-800">
+        <span className="text-[10px] font-mono-code text-gold-300 bg-gold-950 px-2 py-0.5 rounded border border-gold-800">
           {t('aiAnimatorBadge')}
         </span>
       </div>
@@ -30,11 +30,11 @@ export const AnimationStudio: React.FC<AnimationStudioProps> = ({ animation, set
         <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-200 font-semibold flex items-center gap-2">
-              <RotateCw className="w-4 h-4 text-cyan-400" /> {t('autoSpinToggle')}
+              <RotateCw className="w-4 h-4 text-gold-300" /> {t('autoSpinToggle')}
             </span>
             <button
               onClick={() => setAnimation(prev => ({ ...prev, autoSpin: !prev.autoSpin }))}
-              className={`w-10 h-6 rounded-full p-1 transition-colors ${animation.autoSpin ? 'bg-cyan-500' : 'bg-slate-800'}`}
+              className={`w-10 h-6 rounded-full p-1 transition-colors ${animation.autoSpin ? 'bg-gold-400' : 'bg-slate-800'}`}
             >
               <div className={`w-4 h-4 rounded-full bg-white transition-transform ${animation.autoSpin ? 'translate-x-4' : ''}`} />
             </button>
@@ -44,7 +44,7 @@ export const AnimationStudio: React.FC<AnimationStudioProps> = ({ animation, set
             <div className="space-y-1 pt-1">
               <div className="flex justify-between text-[11px] text-slate-400">
                 <span>{t('spinSpeedLabel')}</span>
-                <span className="font-mono-code text-cyan-400">{animation.spinSpeed.toFixed(1)}x</span>
+                <span className="font-mono-code text-gold-300">{animation.spinSpeed.toFixed(1)}x</span>
               </div>
               <input
                 type="range"
@@ -62,11 +62,11 @@ export const AnimationStudio: React.FC<AnimationStudioProps> = ({ animation, set
         <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-200 font-semibold flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-fuchsia-400" /> {t('floatingToggle')}
+              <Sparkles className="w-4 h-4 text-gold-300" /> {t('floatingToggle')}
             </span>
             <button
               onClick={() => setAnimation(prev => ({ ...prev, floating: !prev.floating }))}
-              className={`w-10 h-6 rounded-full p-1 transition-colors ${animation.floating ? 'bg-fuchsia-500' : 'bg-slate-800'}`}
+              className={`w-10 h-6 rounded-full p-1 transition-colors ${animation.floating ? 'bg-gold-600' : 'bg-slate-800'}`}
             >
               <div className={`w-4 h-4 rounded-full bg-white transition-transform ${animation.floating ? 'translate-x-4' : ''}`} />
             </button>
@@ -76,7 +76,7 @@ export const AnimationStudio: React.FC<AnimationStudioProps> = ({ animation, set
             <div className="space-y-1 pt-1">
               <div className="flex justify-between text-[11px] text-slate-400">
                 <span>{t('floatAmpLabel')}</span>
-                <span className="font-mono-code text-fuchsia-400">{(animation.floatAmplitude * 100).toFixed(0)}cm</span>
+                <span className="font-mono-code text-gold-300">{(animation.floatAmplitude * 100).toFixed(0)}cm</span>
               </div>
               <input
                 type="range"
@@ -109,7 +109,7 @@ export const AnimationStudio: React.FC<AnimationStudioProps> = ({ animation, set
           <div className="flex items-center gap-2">
             <button
               onClick={togglePlay}
-              className="p-2 rounded-xl bg-cyan-500 text-black font-bold"
+              className="p-2 rounded-xl bg-gold-400 text-[#141008] font-bold"
             >
               {animation.isPlaying ? <Pause className="w-4 h-4 fill-black" /> : <Play className="w-4 h-4 fill-black" />}
             </button>
@@ -118,7 +118,7 @@ export const AnimationStudio: React.FC<AnimationStudioProps> = ({ animation, set
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono-code text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono-code text-gold-300">
             <Clock className="w-3.5 h-3.5" /> 00:0{Math.floor((animation.timelineProgress / 100) * 15)} / 00:15
           </div>
         </div>
@@ -130,7 +130,7 @@ export const AnimationStudio: React.FC<AnimationStudioProps> = ({ animation, set
             max="100"
             value={animation.timelineProgress}
             onChange={e => setAnimation(prev => ({ ...prev, timelineProgress: parseInt(e.target.value) }))}
-            className="w-full h-2 rounded-lg bg-slate-900 cursor-pointer accent-cyan-400"
+            className="w-full h-2 rounded-lg bg-slate-900 cursor-pointer accent-gold-300"
           />
           <div className="flex justify-between text-[10px] font-mono-code text-slate-500 pt-1">
             <span>00:00 (Cam In)</span>

@@ -44,17 +44,17 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenM
             className="flex items-center gap-3 cursor-pointer group"
             onClick={() => setActiveTab('hero')}
           >
-            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-fuchsia-500 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all">
+            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-gold-400 via-gold-500 to-gold-600 p-0.5 shadow-lg shadow-gold-400/20 group-hover:shadow-gold-400/40 transition-all">
               <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <Box className="w-5 h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
+                <Box className="w-5 h-5 text-gold-300 group-hover:rotate-12 transition-transform duration-300" />
               </div>
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-heading font-extrabold text-xl tracking-tight text-white">
-                  PHOTO<span className="text-cyan-400">2</span>CINE<span className="text-fuchsia-400">3D</span>
+                <span className="font-heading font-semibold text-xl tracking-tight text-white">
+                  PHOTO<span className="text-gold-300">2</span>CINE<span className="text-gold-400">3D</span>
                 </span>
-                <span className="px-1.5 py-0.5 text-[10px] font-mono-code font-bold bg-cyan-950/80 text-cyan-300 border border-cyan-800/50 rounded">
+                <span className="px-1.5 py-0.5 text-[10px] font-mono-code font-bold bg-gold-950/80 text-gold-200 border border-gold-800/50 rounded">
                   WEBAR
                 </span>
               </div>
@@ -63,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenM
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-full border border-slate-800/60">
+          <nav className="hidden lg:flex items-center gap-1 glass-panel p-1.5 rounded-full border border-slate-800/60">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -73,11 +73,11 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenM
                   onClick={() => setActiveTab(item.id)}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
                     isActive
-                      ? 'bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/20'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                      ? 'bg-gold-400/15 text-amber-200 border border-gold-400/40 shadow-sm shadow-gold-400/20'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-gold-300' : 'text-slate-400'}`} />
                   {item.label}
                 </button>
               );
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenM
             
             {/* Language Switcher Dropdown */}
             <div className="relative flex items-center bg-slate-900/80 p-1 rounded-xl border border-slate-800">
-              <Globe className="w-3.5 h-3.5 text-cyan-400 mx-1.5" />
+              <Globe className="w-3.5 h-3.5 text-gold-300 mx-1.5" />
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value as Language)}
@@ -133,7 +133,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenM
             {/* Magic 3D Button */}
             <button
               onClick={onOpenMagic3D}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 via-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-cyan-500/25 hover:scale-[1.02] transition-all"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600 text-[#141008] shadow-lg shadow-gold-400/25 hover:scale-[1.02] hover:shadow-gold-400/40 transition-all"
             >
               <Wand2 className="w-4 h-4 animate-spin-slow" />
               {t('magic3DBtn')}
@@ -169,7 +169,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenM
 
             <button
               onClick={onOpenMagic3D}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-cyan-500 to-indigo-500 text-white"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-gold-300 to-gold-500 text-[#141008]"
             >
               <Wand2 className="w-3.5 h-3.5" />
               3D
@@ -198,10 +198,10 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenM
                       setMobileMenuOpen(false);
                     }}
                     className={`flex items-center gap-2 p-3 rounded-xl text-xs font-semibold ${
-                      isActive ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'bg-slate-900/60 text-slate-300'
+                      isActive ? 'bg-gold-400/15 text-amber-200 border border-gold-400/40' : 'bg-slate-900/60 text-slate-300 border border-transparent'
                     }`}
                   >
-                    <Icon className="w-4 h-4 text-cyan-400" />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-gold-300' : 'text-slate-400'}`} />
                     {item.label}
                   </button>
                 );

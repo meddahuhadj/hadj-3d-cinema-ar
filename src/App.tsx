@@ -50,15 +50,15 @@ export function App() {
       }
       if (cmdLower.includes('cyberpunk') || cmdLower.includes('néon')) {
         updatedLight.preset = 'Cyberpunk';
-        updatedLight.keyLightColor = '#06b6d4';
-        updatedLight.rimLightColor = '#ec4899';
+        updatedLight.keyLightColor = '#d4af37';
+        updatedLight.rimLightColor = '#cf9b4a';
       }
       return { ...prev, materials: updatedMat, lighting: updatedLight };
     });
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen bg-[#0a0908] text-slate-100 flex flex-col font-sans selection:bg-gold-400 selection:text-black">
       
       {/* Global Header */}
       <Header
@@ -153,10 +153,13 @@ export function App() {
       <PrivacyBanner />
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-8">
-        <div className="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-2">
-          <p className="font-heading font-bold text-slate-300">
-            PHOTO2CINE3D — AI Photo → Cinematic 3D → Instant WebAR
+      <footer className="border-t border-slate-800 bg-slate-900/50 py-10">
+        <div className="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-3">
+          <p className="font-heading font-semibold text-xl tracking-tight text-slate-200">
+            PHOTO<span className="gradient-text-gold">2CINE3D</span>
+          </p>
+          <p className="font-mono-code text-[10px] uppercase tracking-[0.28em] text-gold-300/70">
+            AI Photo → Cinematic 3D → Instant WebAR
           </p>
           <p>© 2026 PHOTO2CINE3D Inc. Tous droits réservés. Propulsé par Three.js & WebXR Engine.</p>
         </div>

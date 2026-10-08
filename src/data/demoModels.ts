@@ -27,15 +27,15 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Product',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#06b6d4'
+      colorTint: '#d4af37'
     },
     lighting: {
       preset: 'Studio',
       keyLightColor: '#ffffff',
       keyLightIntensity: 3.2,
-      fillLightColor: '#38bdf8',
+      fillLightColor: '#e8c87a',
       fillLightIntensity: 1.8,
-      rimLightColor: '#ec4899',
+      rimLightColor: '#cf9b4a',
       rimLightIntensity: 2.2,
       hdriPreset: 'Hollywood Studio',
       hdriIntensity: 1.3,
@@ -91,13 +91,13 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Product',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#1e293b'
+      colorTint: '#241f16'
     },
     lighting: {
       preset: 'Studio',
       keyLightColor: '#ffffff',
       keyLightIntensity: 3.0,
-      fillLightColor: '#cbd5e1',
+      fillLightColor: '#cfc5ae',
       fillLightIntensity: 1.8,
       rimLightColor: '#ffffff',
       rimLightIntensity: 1.5,
@@ -155,13 +155,13 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Realistic',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#e2e8f0'
+      colorTint: '#ddd4c0'
     },
     lighting: {
       preset: 'Hollywood',
       keyLightColor: '#ffffff',
       keyLightIntensity: 3.5,
-      fillLightColor: '#38bdf8',
+      fillLightColor: '#e8c87a',
       fillLightIntensity: 2.0,
       rimLightColor: '#f59e0b',
       rimLightIntensity: 2.8,
@@ -218,15 +218,15 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Product',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#f8fafc'
+      colorTint: '#f6f1e7'
     },
     lighting: {
       preset: 'Studio',
       keyLightColor: '#ffffff',
       keyLightIntensity: 3.2,
-      fillLightColor: '#e2e8f0',
+      fillLightColor: '#ddd4c0',
       fillLightIntensity: 2.0,
-      rimLightColor: '#38bdf8',
+      rimLightColor: '#e8c87a',
       rimLightIntensity: 1.8,
       hdriPreset: 'Soft Studio',
       hdriIntensity: 1.1,
@@ -281,13 +281,13 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Product',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#1e293b'
+      colorTint: '#241f16'
     },
     lighting: {
       preset: 'Studio',
       keyLightColor: '#ffffff',
       keyLightIntensity: 3.0,
-      fillLightColor: '#cbd5e1',
+      fillLightColor: '#cfc5ae',
       fillLightIntensity: 1.8,
       rimLightColor: '#ffffff',
       rimLightIntensity: 1.5,
@@ -344,15 +344,15 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Cinematic',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#06b6d4'
+      colorTint: '#d4af37'
     },
     lighting: {
       preset: 'Cyberpunk',
-      keyLightColor: '#06b6d4',
+      keyLightColor: '#d4af37',
       keyLightIntensity: 3.5,
-      fillLightColor: '#ec4899',
+      fillLightColor: '#cf9b4a',
       fillLightIntensity: 2.2,
-      rimLightColor: '#38bdf8',
+      rimLightColor: '#e8c87a',
       rimLightIntensity: 4.0,
       hdriPreset: 'Neon City Night',
       hdriIntensity: 1.2,
@@ -407,13 +407,13 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Realistic',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#e2e8f0'
+      colorTint: '#ddd4c0'
     },
     lighting: {
       preset: 'Hollywood',
       keyLightColor: '#fffbeb',
       keyLightIntensity: 3.0,
-      fillLightColor: '#94a3b8',
+      fillLightColor: '#c9bfa8',
       fillLightIntensity: 1.5,
       rimLightColor: '#f59e0b',
       rimLightIntensity: 2.5,
@@ -470,15 +470,15 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Sci-Fi',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#3b82f6'
+      colorTint: '#a8842c'
     },
     lighting: {
       preset: 'Sci-Fi',
-      keyLightColor: '#3b82f6',
+      keyLightColor: '#a8842c',
       keyLightIntensity: 4.0,
-      fillLightColor: '#6366f1',
+      fillLightColor: '#8a6a1f',
       fillLightIntensity: 2.0,
-      rimLightColor: '#60a5fa',
+      rimLightColor: '#e8c87a',
       rimLightIntensity: 4.5,
       hdriPreset: 'Hangar Blue Light',
       hdriIntensity: 1.4,

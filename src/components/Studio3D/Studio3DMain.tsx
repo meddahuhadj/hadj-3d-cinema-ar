@@ -40,15 +40,15 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
         
         {/* Model Title & Tag */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-fuchsia-500 p-0.5 shadow-md">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-gold-400 to-gold-600 p-0.5 shadow-md">
             <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Box className="w-5 h-5 text-cyan-400" />
+              <Box className="w-5 h-5 text-gold-300" />
             </div>
           </div>
           <div>
-            <h2 className="font-heading font-extrabold text-white text-lg flex items-center gap-2">
+            <h2 className="font-heading font-semibold text-white text-xl flex items-center gap-2">
               {modelData.title}
-              <span className="text-[10px] font-mono-code px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">
+              <span className="text-[10px] font-mono-code px-2 py-0.5 rounded bg-gold-950 text-gold-300 border border-gold-800">
                 {t('studioTitleTag')}
               </span>
             </h2>
@@ -62,9 +62,9 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={onOpenAIAssistant}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 transition-all"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-gold-200 border border-slate-700 transition-all"
           >
-            <Wand2 className="w-4 h-4 text-cyan-400" />
+            <Wand2 className="w-4 h-4 text-gold-300" />
             <span>{t('aiAssistantBtn')}</span>
           </button>
 
@@ -77,7 +77,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
 
           <button
             onClick={onOpenAR}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-indigo-500 text-white shadow-lg transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-gold-300 to-gold-500 text-[#141008] shadow-lg shadow-gold-400/25 transition-all"
           >
             <QrCode className="w-4 h-4" />
             <span>{t('viewInWebARBtn')}</span>
@@ -105,7 +105,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               <button
                 onClick={() => setViewMode('rendered')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                  viewMode === 'rendered' ? 'bg-cyan-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                  viewMode === 'rendered' ? 'bg-gold-400 text-[#141008] font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 {t('renderedPBR')}
@@ -113,7 +113,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               <button
                 onClick={() => setViewMode('wireframe')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                  viewMode === 'wireframe' ? 'bg-cyan-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                  viewMode === 'wireframe' ? 'bg-gold-400 text-[#141008] font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 {t('wireframeMode')}
@@ -121,15 +121,15 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               <button
                 onClick={() => setViewMode('solid')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                  viewMode === 'solid' ? 'bg-cyan-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                  viewMode === 'solid' ? 'bg-gold-400 text-[#141008] font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 {t('solidMode')}
               </button>
             </div>
 
-            <div className="absolute top-6 right-6 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800 text-[11px] font-mono-code text-cyan-300">
-              <Eye className="w-3.5 h-3.5 text-cyan-400" />
+            <div className="absolute top-6 right-6 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800 text-[11px] font-mono-code text-gold-200">
+              <Eye className="w-3.5 h-3.5 text-gold-300" />
               <span>Three.js WebGL 2.0</span>
             </div>
 
@@ -143,9 +143,9 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
             />
 
             <div className="absolute bottom-6 left-6 z-20 bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-800 text-xs text-slate-300 flex items-center gap-3">
-              <span>{t('presetLabel')}: <strong className="text-cyan-400 font-mono-code">{lighting.preset}</strong></span>
+              <span>{t('presetLabel')}: <strong className="text-gold-300 font-mono-code">{lighting.preset}</strong></span>
               <span>•</span>
-              <span>cam: <strong className="text-fuchsia-400 font-mono-code">{camera.focalLength}mm</strong></span>
+              <span>cam: <strong className="text-gold-300 font-mono-code">{camera.focalLength}mm</strong></span>
             </div>
 
           </div>
@@ -159,7 +159,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               <button
                 onClick={() => setActiveSubTab('materials')}
                 className={`py-2 px-1 rounded-xl text-xs font-semibold flex flex-col items-center gap-1 ${
-                  activeSubTab === 'materials' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'text-slate-400'
+                  activeSubTab === 'materials' ? 'bg-gold-400/20 text-gold-200 border border-gold-400/40' : 'text-slate-400'
                 }`}
               >
                 <Sliders className="w-4 h-4" /> {t('tabMaterials')}
@@ -168,7 +168,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               <button
                 onClick={() => setActiveSubTab('lighting')}
                 className={`py-2 px-1 rounded-xl text-xs font-semibold flex flex-col items-center gap-1 ${
-                  activeSubTab === 'lighting' ? 'bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/40' : 'text-slate-400'
+                  activeSubTab === 'lighting' ? 'bg-gold-600/20 text-gold-200 border border-gold-600/40' : 'text-slate-400'
                 }`}
               >
                 <Film className="w-4 h-4" /> {t('tabLighting')}
@@ -177,7 +177,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               <button
                 onClick={() => setActiveSubTab('camera')}
                 className={`py-2 px-1 rounded-xl text-xs font-semibold flex flex-col items-center gap-1 ${
-                  activeSubTab === 'camera' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40' : 'text-slate-400'
+                  activeSubTab === 'camera' ? 'bg-gold-500/20 text-gold-200 border border-gold-500/40' : 'text-slate-400'
                 }`}
               >
                 <Camera className="w-4 h-4" /> {t('tabCamera')}

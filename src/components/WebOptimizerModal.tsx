@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cpu, X, Check, Zap, ArrowRight, Layers, Sliders } from 'lucide-react';
+import { Cpu, X, Zap } from 'lucide-react';
 import { Model3DData } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -9,7 +9,7 @@ interface WebOptimizerModalProps {
   modelData: Model3DData;
 }
 
-export const WebOptimizerModal: React.FC<WebOptimizerModalProps> = ({ isOpen, onClose, modelData }) => {
+export const WebOptimizerModal: React.FC<WebOptimizerModalProps> = ({ isOpen, onClose }) => {
   const [lodLevel, setLodLevel] = useState<'high' | 'medium' | 'low'>('medium');
   const [optimized, setOptimized] = useState(false);
   const { t } = useLanguage();
@@ -25,16 +25,16 @@ export const WebOptimizerModal: React.FC<WebOptimizerModalProps> = ({ isOpen, on
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
-      <div className="glass-panel-glow rounded-3xl max-w-lg w-full p-6 border border-cyan-500/40 shadow-2xl space-y-6 relative">
+      <div className="glass-panel-glow rounded-3xl max-w-lg w-full p-6 border border-gold-400/40 shadow-2xl space-y-6 relative">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-cyan-950 text-cyan-400 border border-cyan-800">
+            <div className="p-2.5 rounded-xl bg-gold-950 text-gold-300 border border-gold-800">
               <Cpu className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-heading font-extrabold text-white text-lg">{t('webOptimizerTitle')}</h3>
+              <h3 className="font-heading font-semibold text-white text-lg">{t('webOptimizerTitle')}</h3>
               <p className="text-xs text-slate-400">{t('webOptimizerSubtitle')}</p>
             </div>
           </div>
@@ -53,8 +53,8 @@ export const WebOptimizerModal: React.FC<WebOptimizerModalProps> = ({ isOpen, on
           </div>
 
           <div className="space-y-1 border-l rtl:border-l-0 rtl:border-r border-slate-800 pl-4 rtl:pl-0 rtl:pr-4">
-            <span className="text-[11px] font-mono-code text-cyan-400 uppercase font-bold">{t('optimizedModelLabel')}</span>
-            <p className="text-xl font-mono-code font-bold text-cyan-300">145 K <span className="text-xs text-cyan-500">poly</span></p>
+            <span className="text-[11px] font-mono-code text-gold-300 uppercase font-bold">{t('optimizedModelLabel')}</span>
+            <p className="text-xl font-mono-code font-bold text-gold-200">145 K <span className="text-xs text-gold-400">poly</span></p>
             <p className="text-xs font-mono-code text-slate-400">Texture: 2K WebP</p>
             <p className="text-xs font-mono-code text-emerald-400 font-bold">Size: 7.2 MB (-92%)</p>
           </div>
@@ -67,7 +67,7 @@ export const WebOptimizerModal: React.FC<WebOptimizerModalProps> = ({ isOpen, on
             <button
               onClick={() => setLodLevel('high')}
               className={`p-3 rounded-xl border text-xs font-mono-code transition-all ${
-                lodLevel === 'high' ? 'bg-cyan-950 text-cyan-300 border-cyan-400 font-bold' : 'bg-slate-900 text-slate-400 border-slate-800'
+                lodLevel === 'high' ? 'bg-gold-950 text-gold-200 border-gold-300 font-bold' : 'bg-slate-900 text-slate-400 border-slate-800'
               }`}
             >
               {t('lod0')}
@@ -75,7 +75,7 @@ export const WebOptimizerModal: React.FC<WebOptimizerModalProps> = ({ isOpen, on
             <button
               onClick={() => setLodLevel('medium')}
               className={`p-3 rounded-xl border text-xs font-mono-code transition-all ${
-                lodLevel === 'medium' ? 'bg-cyan-950 text-cyan-300 border-cyan-400 font-bold' : 'bg-slate-900 text-slate-400 border-slate-800'
+                lodLevel === 'medium' ? 'bg-gold-950 text-gold-200 border-gold-300 font-bold' : 'bg-slate-900 text-slate-400 border-slate-800'
               }`}
             >
               {t('lod1')}
@@ -83,7 +83,7 @@ export const WebOptimizerModal: React.FC<WebOptimizerModalProps> = ({ isOpen, on
             <button
               onClick={() => setLodLevel('low')}
               className={`p-3 rounded-xl border text-xs font-mono-code transition-all ${
-                lodLevel === 'low' ? 'bg-cyan-950 text-cyan-300 border-cyan-400 font-bold' : 'bg-slate-900 text-slate-400 border-slate-800'
+                lodLevel === 'low' ? 'bg-gold-950 text-gold-200 border-gold-300 font-bold' : 'bg-slate-900 text-slate-400 border-slate-800'
               }`}
             >
               {t('lod2')}
@@ -94,7 +94,7 @@ export const WebOptimizerModal: React.FC<WebOptimizerModalProps> = ({ isOpen, on
         {/* Apply Button */}
         <button
           onClick={runOptimization}
-          className="w-full py-3.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-500 to-indigo-500 text-white shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2"
+          className="w-full py-3.5 rounded-xl font-bold text-xs bg-gradient-to-r from-gold-300 to-gold-500 text-[#141008] shadow-lg shadow-gold-400/30 hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
         >
           <Zap className="w-4 h-4" />
           <span>{optimized ? t('optApplied') : t('applyOptBtn')}</span>

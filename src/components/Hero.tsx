@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Wand2, QrCode, Play, Sparkles, ArrowRight, Shield, Zap, Layers, Eye, Smartphone, Box, Film, RefreshCw, Camera, Cpu } from 'lucide-react';
+import { Wand2, QrCode, Play, Sparkles, ArrowRight, Shield, Zap, Eye, Smartphone, Box, Film, RefreshCw, Camera, Cpu } from 'lucide-react';
 import * as THREE from 'three';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -21,7 +21,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
     const height = canvas.parentElement?.clientHeight || 500;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x07090e, 0.08);
+    scene.fog = new THREE.FogExp2(0x0a0908, 0.08);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.set(0, 1, 5);
@@ -35,22 +35,22 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
 
     const coreGeo = new THREE.IcosahedronGeometry(1.2, 2);
     const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x06b6d4,
+      color: 0xd4af37,
       roughness: 0.15,
       metalness: 0.85,
-      emissive: 0x0284c7,
+      emissive: 0x8a6a1f,
       emissiveIntensity: 0.3
     });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     group.add(coreMesh);
 
     const ringGeo = new THREE.TorusGeometry(1.8, 0.04, 16, 100);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, wireframe: true });
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xf5e2a8, wireframe: true });
     const ringMesh1 = new THREE.Mesh(ringGeo, ringMat);
     ringMesh1.rotation.x = Math.PI / 3;
     group.add(ringMesh1);
 
-    const ringMesh2 = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0x06b6d4, wireframe: true }));
+    const ringMesh2 = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0xa8842c, wireframe: true }));
     ringMesh2.rotation.y = Math.PI / 4;
     group.add(ringMesh2);
 
@@ -65,26 +65,26 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
     const particleMat = new THREE.PointsMaterial({
       size: 0.04,
-      color: 0x38bdf8,
+      color: 0xf0d78c,
       transparent: true,
       opacity: 0.8
     });
     const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    const keyLight = new THREE.DirectionalLight(0x06b6d4, 3);
+    const keyLight = new THREE.DirectionalLight(0xffe9b0, 3);
     keyLight.position.set(5, 5, 5);
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0xec4899, 2);
+    const fillLight = new THREE.DirectionalLight(0xcf9b4a, 2);
     fillLight.position.set(-5, -2, -3);
     scene.add(fillLight);
 
-    const ambientLight = new THREE.AmbientLight(0x1e293b, 1.5);
+    const ambientLight = new THREE.AmbientLight(0x191408, 1.5);
     scene.add(ambientLight);
 
     let animationFrameId: number;
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     const animate = () => {
       const time = clock.getElapsedTime();
@@ -119,11 +119,11 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
   }, []);
 
   const pipelineSteps = [
-    { num: '01', title: t('step01Title'), desc: t('step01Desc'), icon: Camera, color: 'from-cyan-500 to-blue-500' },
-    { num: '02', title: t('step02Title'), desc: t('step02Desc'), icon: Cpu, color: 'from-indigo-500 to-purple-500' },
-    { num: '03', title: t('step03Title'), desc: t('step03Desc'), icon: Sparkles, color: 'from-fuchsia-500 to-pink-500' },
-    { num: '04', title: t('step04Title'), desc: t('step04Desc'), icon: Film, color: 'from-pink-500 to-rose-500' },
-    { num: '05', title: t('step05Title'), desc: t('step05Desc'), icon: Smartphone, color: 'from-emerald-500 to-teal-500' },
+    { num: '01', title: t('step01Title'), desc: t('step01Desc'), icon: Camera, color: 'from-gold-200 to-gold-400' },
+    { num: '02', title: t('step02Title'), desc: t('step02Desc'), icon: Cpu, color: 'from-gold-300 to-gold-500' },
+    { num: '03', title: t('step03Title'), desc: t('step03Desc'), icon: Sparkles, color: 'from-gold-400 to-gold-600' },
+    { num: '04', title: t('step04Title'), desc: t('step04Desc'), icon: Film, color: 'from-gold-500 to-gold-700' },
+    { num: '05', title: t('step05Title'), desc: t('step05Desc'), icon: Smartphone, color: 'from-gold-600 to-slate-700' },
   ];
 
   return (
@@ -134,14 +134,14 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
           
           {/* Left Text */}
           <div className="lg:col-span-7 space-y-8 text-center rtl:text-right ltr:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-cyan-500/30 text-xs font-semibold text-cyan-300">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass-panel border border-gold-400/30 font-mono-code text-[11px] uppercase tracking-[0.28em] text-amber-200/70">
+              <Sparkles className="w-3.5 h-3.5 text-gold-300" />
               <span>{t('heroPill')}</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight text-white leading-[1.06]">
               {t('heroTitle1')} <br className="hidden sm:inline" />
-              <span className="gradient-text-cyan-purple">{t('heroTitleHighlight')}</span>
+              <span className="gradient-text-gold italic">{t('heroTitleHighlight')}</span>
             </h1>
 
             <p className="text-lg sm:text-xl text-slate-300 max-w-2xl font-normal leading-relaxed">
@@ -152,18 +152,18 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
               <button
                 onClick={onStartUpload}
-                className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-cyan-500 via-indigo-500 to-fuchsia-500 text-white shadow-xl shadow-cyan-500/25 hover:scale-[1.02] transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600 text-[#141008] shadow-xl shadow-gold-400/30 hover:scale-[1.02] hover:shadow-gold-400/40 transition-all"
               >
-                <Wand2 className="w-5 h-5 text-white" />
+                <Wand2 className="w-5 h-5 text-[#141008]" />
                 <span>{t('btnCreate3D')}</span>
                 <ArrowRight className="w-4 h-4 rtl:rotate-180" />
               </button>
 
               <button
                 onClick={onTryWebAR}
-                className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl font-semibold text-sm glass-panel border border-slate-700 text-slate-200 hover:text-white transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl font-semibold text-sm glass-panel border border-gold-400/25 text-slate-200 hover:text-white hover:border-gold-400/50 transition-all"
               >
-                <QrCode className="w-5 h-5 text-cyan-400" />
+                <QrCode className="w-5 h-5 text-gold-300" />
                 <span>{t('btnTryWebAR')}</span>
               </button>
 
@@ -171,7 +171,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
                 onClick={onWatchDemo}
                 className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 rounded-2xl font-semibold text-sm text-slate-400 hover:text-slate-200"
               >
-                <Play className="w-4 h-4 text-fuchsia-400 fill-fuchsia-400" />
+                <Play className="w-4 h-4 text-gold-300 fill-gold-300" />
                 <span>{t('btnWatchDemo')}</span>
               </button>
             </div>
@@ -179,15 +179,15 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
             {/* Badges */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/80">
               <div className="flex items-center gap-2 text-xs text-slate-300">
-                <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                <Zap className="w-4 h-4 text-gold-300 flex-shrink-0" />
                 <span>{t('badgeFPS')}</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-300">
-                <Shield className="w-4 h-4 text-indigo-400 flex-shrink-0" />
+                <Shield className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span>{t('badgePrivacy')}</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-300">
-                <Box className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                <Box className="w-4 h-4 text-gold-300 flex-shrink-0" />
                 <span>{t('badgeExport')}</span>
               </div>
             </div>
@@ -196,10 +196,10 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
 
           {/* Right 3D Canvas */}
           <div className="lg:col-span-5 relative">
-            <div className="glass-panel-glow rounded-3xl p-4 border border-cyan-500/30 relative overflow-hidden shadow-2xl">
+            <div className="glass-panel-glow rounded-3xl p-4 border border-gold-400/30 relative overflow-hidden shadow-2xl">
               <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800/80 mb-2">
-                <div className="flex items-center gap-2 text-xs font-mono-code text-slate-400">
-                  <Eye className="w-3.5 h-3.5 text-cyan-400" /> {t('liveViewport')}
+                <div className="flex items-center gap-2 font-mono-code text-[11px] uppercase tracking-[0.28em] text-amber-200/70">
+                  <Eye className="w-3.5 h-3.5 text-gold-300" /> {t('liveViewport')}
                 </div>
               </div>
 
@@ -210,7 +210,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
                 </div>
                 <button
                   onClick={onOpenStudio}
-                  className="absolute bottom-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-black shadow-lg"
+                  className="absolute bottom-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gold-400 text-[#141008] shadow-lg shadow-gold-400/30 hover:scale-[1.03] transition-all"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   {t('openStudioBtn')}
@@ -219,7 +219,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
 
               <div className="mt-3 flex items-center justify-between text-xs text-slate-400 px-2 font-mono-code">
                 <span>{t('fpsLabel')}</span>
-                <span className="text-cyan-400">{t('dragRotate')}</span>
+                <span className="text-gold-300">{t('dragRotate')}</span>
               </div>
             </div>
           </div>
@@ -229,10 +229,10 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
         {/* 5-Step Pipeline */}
         <div className="mt-20 pt-12 border-t border-slate-800/80">
           <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight">
               {t('pipelineTitle')}
             </h2>
-            <p className="text-sm text-slate-400 mt-2">{t('pipelineSubtitle')}</p>
+            <p className="text-sm text-slate-400 mt-3 max-w-xl mx-auto leading-relaxed">{t('pipelineSubtitle')}</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -242,11 +242,11 @@ export const Hero: React.FC<HeroProps> = ({ onStartUpload, onTryWebAR, onWatchDe
                 <div key={idx} className="glass-card rounded-2xl p-5 relative overflow-hidden">
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${step.color} p-0.5 mb-4 shadow-md`}>
                     <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-white" />
+                      <Icon className="w-5 h-5 text-slate-100" />
                     </div>
                   </div>
-                  <div className="text-xs font-mono-code text-cyan-400 font-bold mb-1">STEP {step.num}</div>
-                  <h3 className="font-heading text-base font-bold text-white mb-2">{step.title}</h3>
+                  <div className="font-mono-code text-[11px] uppercase tracking-[0.28em] text-amber-200/70 font-bold mb-2">STEP {step.num}</div>
+                  <h3 className="font-heading text-lg font-semibold text-white mb-2 leading-snug">{step.title}</h3>
                   <p className="text-xs text-slate-400 leading-relaxed">{step.desc}</p>
                 </div>
               );

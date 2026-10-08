@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Camera, Trash2, CheckCircle2, AlertCircle, Info, Sparkles, Image as ImageIcon, RotateCw, ArrowRight, Wand2, Box, Cpu } from 'lucide-react';
+import { Upload, Camera, Trash2, CheckCircle2, Info, Sparkles, Image as ImageIcon, RotateCw, ArrowRight, Wand2, Cpu } from 'lucide-react';
 import { PhotoItem, Model3DData } from '../types';
 import { INITIAL_DEMO_MODELS } from '../data/demoModels';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -172,15 +172,15 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
         preset: 'Product',
         wireframe: false,
         textureEnhanceAI: true,
-        colorTint: '#111827'
+        colorTint: '#17140e'
       },
       lighting: {
         preset: 'Studio',
         keyLightColor: '#ffffff',
         keyLightIntensity: 3.2,
-        fillLightColor: '#e2e8f0',
+        fillLightColor: '#ddd4c0',
         fillLightIntensity: 2.0,
-        rimLightColor: '#00f2fe',
+        rimLightColor: '#f5e2a8',
         rimLightIntensity: 2.2,
         hdriPreset: 'Studio',
         hdriIntensity: 1.2,
@@ -271,10 +271,10 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
         <div>
-          <div className="flex items-center gap-2 text-cyan-400 font-mono-code text-xs font-bold uppercase tracking-wider mb-1">
-            <Camera className="w-4 h-4" /> {t('uploadHeaderTag')}
+          <div className="flex items-center gap-2.5 font-mono-code text-[11px] uppercase tracking-[0.28em] text-amber-200/70 mb-2">
+            <Camera className="w-3.5 h-3.5 text-gold-300" /> {t('uploadHeaderTag')}
           </div>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">
+          <h2 className="text-4xl sm:text-5xl font-semibold text-white tracking-tight">
             {t('uploadHeaderTitle')}
           </h2>
           <p className="text-slate-400 text-sm mt-1">
@@ -287,13 +287,13 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             onClick={loadSamplePhotos}
             className="px-4 py-2 rounded-xl text-xs font-semibold glass-panel border border-slate-700 text-slate-200 hover:text-white transition-all flex items-center gap-2"
           >
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <Sparkles className="w-3.5 h-3.5 text-gold-300" />
             {t('loadDemoPhotos')}
           </button>
 
           <button
             onClick={onOpenMagic3D}
-            className="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-indigo-500 text-white shadow-lg transition-all flex items-center gap-2"
+            className="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-gold-300 to-gold-500 text-[#141008] shadow-lg shadow-gold-400/25 hover:scale-[1.02] transition-all flex items-center gap-2"
           >
             <Wand2 className="w-3.5 h-3.5" />
             {t('modeMagic3D')}
@@ -309,7 +309,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
             className={`border-2 border-dashed rounded-3xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-300 relative overflow-hidden ${
-              dragActive ? 'border-cyan-400 bg-cyan-950/30' : 'border-slate-800 hover:border-cyan-500/40 bg-slate-900/40'
+              dragActive ? 'border-gold-300 bg-gold-950/30' : 'border-slate-800 hover:border-gold-400/40 bg-slate-900/40'
             }`}
           >
             <input
@@ -321,11 +321,11 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
               onChange={e => e.target.files && handleFiles(e.target.files)}
             />
 
-            <div className="w-16 h-16 rounded-2xl bg-cyan-950/80 border border-cyan-800/60 text-cyan-400 flex items-center justify-center mx-auto mb-4 shadow-xl">
+            <div className="w-16 h-16 rounded-2xl bg-gold-950/80 border border-gold-800/60 text-gold-300 flex items-center justify-center mx-auto mb-4 shadow-xl">
               <Upload className="w-8 h-8 animate-bounce" />
             </div>
 
-            <h3 className="text-lg font-bold text-white mb-1">
+            <h3 className="text-xl font-semibold text-white mb-1">
               {t('dropzoneTitle')}
             </h3>
             <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
@@ -339,7 +339,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
               <span className="px-2.5 py-1 rounded-md bg-slate-800 text-[10px] font-mono-code text-slate-300">HEIC</span>
             </div>
 
-            <div className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 hover:text-cyan-300">
+            <div className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-gold-300 hover:text-gold-200">
               <Camera className="w-4 h-4" />
               <button
                 type="button"
@@ -357,7 +357,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             <div className="glass-panel rounded-3xl p-6 border border-slate-800 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-bold text-white">
-                  <ImageIcon className="w-4 h-4 text-cyan-400" />
+                  <ImageIcon className="w-4 h-4 text-gold-300" />
                   <span>{t('importedPhotos')} ({photos.length})</span>
                 </div>
                 <button
@@ -394,7 +394,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
               {/* Target 3D Category Selector */}
               <div className="pt-4 border-t border-slate-800 space-y-2">
                 <label className="text-xs font-bold text-slate-200 flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-cyan-400" />
+                  <Cpu className="w-4 h-4 text-gold-300" />
                   <span>Gabarit & Reconnaissance d'Objet IA (Fidélité 3D) :</span>
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -405,7 +405,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
                       onClick={() => setSelectedCategoryId(cat.id)}
                       className={`p-2.5 rounded-xl border text-left rtl:text-right transition-all flex items-center justify-between ${
                         selectedCategoryId === cat.id
-                          ? 'bg-cyan-950/70 border-cyan-400 text-cyan-300 shadow-md ring-1 ring-cyan-400/40'
+                          ? 'bg-gold-950/70 border-gold-300 text-gold-200 shadow-md ring-1 ring-gold-300/40'
                           : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
                       }`}
                     >
@@ -417,7 +417,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
                         </div>
                       </div>
                       {selectedCategoryId === cat.id && (
-                        <CheckCircle2 className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-gold-300 flex-shrink-0" />
                       )}
                     </button>
                   ))}
@@ -430,7 +430,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
                 </span>
                 <button
                   onClick={handleProceed}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-indigo-500 text-white shadow-lg hover:shadow-cyan-500/25 transition-all"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-gold-300 to-gold-500 text-[#141008] shadow-lg shadow-gold-400/25 hover:scale-[1.02] transition-all"
                 >
                   <span>{t('launchReconstructBtn')}</span>
                   <ArrowRight className="w-4 h-4 rtl:rotate-180" />
@@ -443,10 +443,10 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
           <div className="glass-panel rounded-3xl p-6 border border-slate-800 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2 text-sm font-bold text-white">
-                <RotateCw className="w-4 h-4 text-cyan-400" />
+                <RotateCw className="w-4 h-4 text-gold-300" />
                 <span>Guide de Couverture Angulaire 360°</span>
               </div>
-              <span className="text-[11px] font-mono-code font-bold px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+              <span className="text-[11px] font-mono-code font-bold px-2.5 py-0.5 rounded bg-gold-950 text-gold-200 border border-gold-800">
                 {photos.length === 0 ? '0/8 Angles' : `${Math.min(8, Math.max(1, Math.floor(photos.length / 2) + 1))}/8 Angles couverts`}
               </span>
             </div>
@@ -484,7 +484,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             </div>
 
             <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex items-start gap-2">
-              <Info className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+              <Info className="w-4 h-4 text-gold-300 flex-shrink-0 mt-0.5" />
               <p>
                 {photos.length === 0 && "Conseil : Prenez des photos en tournant autour de l'objet à hauteur constante avec un éclairage uniforme."}
                 {photos.length > 0 && photos.length < 6 && "Bon début ! Ajoutez des angles arrière et latéraux pour fermer le maillage 3D à 360°."}
@@ -497,7 +497,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 
         {/* Quality Diagnostics & Guide */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="glass-panel-glow rounded-3xl p-6 border border-cyan-500/30 space-y-4">
+          <div className="glass-panel-glow rounded-3xl p-6 border border-gold-400/30 space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono-code text-slate-400 uppercase font-bold">{t('aiDiagnostic')}</span>
               <span className="text-[10px] font-mono-code px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
@@ -508,11 +508,11 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             <div>
               <div className="flex items-baseline justify-between mb-1">
                 <span className="text-xs font-semibold text-slate-200">{t('photoQuality')}</span>
-                <span className="text-2xl font-extrabold text-cyan-400 font-mono-code">{qualityScore}%</span>
+                <span className="text-2xl font-bold text-gold-300 font-mono-code">{qualityScore}%</span>
               </div>
               <div className="w-full h-3 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-cyan-500 via-indigo-500 to-fuchsia-500 transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 transition-all duration-500"
                   style={{ width: `${qualityScore}%` }}
                 />
               </div>
@@ -525,20 +525,20 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
               </div>
               <div className="flex items-center justify-between">
                 <span>Doublons éliminés :</span>
-                <span className="text-cyan-400 font-bold">0 détecté</span>
+                <span className="text-gold-300 font-bold">0 détecté</span>
               </div>
               <div className="flex items-center justify-between">
                 <span>Reconstruction PBR :</span>
-                <span className="text-fuchsia-400 font-bold">Prête</span>
+                <span className="text-gold-300 font-bold">Prête</span>
               </div>
             </div>
 
             <button
               onClick={handleProceed}
               disabled={photos.length === 0}
-              className={`w-full py-4 rounded-2xl font-heading font-extrabold text-sm flex items-center justify-center gap-2 shadow-xl transition-all ${
+              className={`w-full py-4 rounded-2xl font-heading font-semibold text-base flex items-center justify-center gap-2 shadow-xl transition-all ${
                 photos.length > 0
-                  ? 'bg-gradient-to-r from-cyan-500 via-indigo-500 to-fuchsia-500 text-white hover:opacity-95 hover:scale-[1.02] shadow-cyan-500/25'
+                  ? 'bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600 text-[#141008] hover:opacity-95 hover:scale-[1.02] shadow-gold-400/30'
                   : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
               }`}
             >
@@ -549,25 +549,25 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 
           <div className="glass-panel rounded-3xl p-6 border border-slate-800 space-y-4">
             <div className="flex items-center gap-2 text-sm font-bold text-white">
-              <Info className="w-4 h-4 text-cyan-400" />
+              <Info className="w-4 h-4 text-gold-300" />
               <span>{t('guideTitle')}</span>
             </div>
 
             <ul className="space-y-3 text-xs text-slate-300">
               <li className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-cyan-950 text-cyan-400 flex items-center justify-center font-bold text-[10px] flex-shrink-0">1</div>
+                <div className="w-5 h-5 rounded-full bg-gold-950 text-gold-300 flex items-center justify-center font-bold text-[10px] flex-shrink-0">1</div>
                 <span>{t('guide1')}</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-cyan-950 text-cyan-400 flex items-center justify-center font-bold text-[10px] flex-shrink-0">2</div>
+                <div className="w-5 h-5 rounded-full bg-gold-950 text-gold-300 flex items-center justify-center font-bold text-[10px] flex-shrink-0">2</div>
                 <span>{t('guide2')}</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-cyan-950 text-cyan-400 flex items-center justify-center font-bold text-[10px] flex-shrink-0">3</div>
+                <div className="w-5 h-5 rounded-full bg-gold-950 text-gold-300 flex items-center justify-center font-bold text-[10px] flex-shrink-0">3</div>
                 <span>{t('guide3')}</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-cyan-950 text-cyan-400 flex items-center justify-center font-bold text-[10px] flex-shrink-0">4</div>
+                <div className="w-5 h-5 rounded-full bg-gold-950 text-gold-300 flex items-center justify-center font-bold text-[10px] flex-shrink-0">4</div>
                 <span>{t('guide4')}</span>
               </li>
             </ul>

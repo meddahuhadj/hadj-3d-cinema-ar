@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, ShieldCheck, QrCode, FileText, Calendar, User, Tag, Scale, CheckCircle2, History, Share2 } from 'lucide-react';
+import { Layers, ShieldCheck, FileText, Calendar, User, Tag, Scale, CheckCircle2, History } from 'lucide-react';
 import { DEMO_DIGITAL_TWIN } from '../../data/demoModels';
 import { QRCodeSVG } from 'qrcode.react';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -20,10 +20,10 @@ export const DigitalTwinMode: React.FC = () => {
       
       {/* Header */}
       <div className="border-b border-slate-800 pb-6">
-        <div className="flex items-center gap-2 text-cyan-400 font-mono-code text-xs font-bold uppercase tracking-wider mb-1">
-          <Layers className="w-4 h-4" /> {t('digitalTwinHeaderTag')}
+        <div className="flex items-center gap-2.5 font-mono-code text-[11px] uppercase tracking-[0.28em] text-amber-200/70 mb-2">
+          <Layers className="w-3.5 h-3.5 text-gold-300" /> {t('digitalTwinHeaderTag')}
         </div>
-        <h2 className="text-3xl font-extrabold text-white tracking-tight">
+        <h2 className="text-4xl sm:text-5xl font-semibold text-white tracking-tight">
           {t('digitalTwinTitle')}
         </h2>
         <p className="text-slate-400 text-sm mt-1">
@@ -36,11 +36,11 @@ export const DigitalTwinMode: React.FC = () => {
         {/* Left Column: Certified Digital Passport Card (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           
-          <div className="glass-panel-glow rounded-3xl p-6 sm:p-8 border border-cyan-500/30 space-y-6 relative overflow-hidden">
+          <div className="glass-panel-glow rounded-3xl p-6 sm:p-8 border border-gold-400/30 space-y-6 relative overflow-hidden">
             
             {/* Top Bar */}
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <div className="flex items-center gap-2 text-xs font-mono-code text-cyan-400">
+              <div className="flex items-center gap-2 text-xs font-mono-code text-gold-300">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span>{t('passportTag')}</span>
               </div>
@@ -52,51 +52,51 @@ export const DigitalTwinMode: React.FC = () => {
             {/* Title & ID */}
             <div>
               <span className="text-xs font-mono-code text-slate-500">{t('assetIDLabel')} {twin.id}</span>
-              <h3 className="text-2xl font-extrabold text-white mt-0.5">{twin.name}</h3>
+              <h3 className="text-3xl font-semibold text-white mt-0.5">{twin.name}</h3>
             </div>
 
             {/* Passport Grid Data */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
               <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
                 <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <Tag className="w-3 h-3 text-cyan-400" /> {t('categoryLabel')}
+                  <Tag className="w-3 h-3 text-gold-300" /> {t('categoryLabel')}
                 </span>
                 <p className="text-xs font-bold text-white truncate">{twin.category}</p>
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
                 <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <Scale className="w-3 h-3 text-cyan-400" /> {t('dimensionsLabel')}
+                  <Scale className="w-3 h-3 text-gold-300" /> {t('dimensionsLabel')}
                 </span>
-                <p className="text-xs font-mono-code font-bold text-cyan-300">
+                <p className="text-xs font-mono-code font-bold text-gold-200">
                   {twin.dimensions.widthCm} x {twin.dimensions.heightCm} x {twin.dimensions.depthCm} cm
                 </p>
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
                 <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <Scale className="w-3 h-3 text-cyan-400" /> {t('weightLabel')}
+                  <Scale className="w-3 h-3 text-gold-300" /> {t('weightLabel')}
                 </span>
                 <p className="text-xs font-mono-code font-bold text-white">{twin.weightKg} kg</p>
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
                 <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <FileText className="w-3 h-3 text-cyan-400" /> {t('materialsLabel')}
+                  <FileText className="w-3 h-3 text-gold-300" /> {t('materialsLabel')}
                 </span>
                 <p className="text-xs font-bold text-slate-200 truncate">{twin.primaryMaterial}</p>
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
                 <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-cyan-400" /> {t('createdAtLabel')}
+                  <Calendar className="w-3 h-3 text-gold-300" /> {t('createdAtLabel')}
                 </span>
                 <p className="text-xs font-mono-code font-bold text-slate-200 truncate">{twin.createdAt}</p>
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
                 <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <User className="w-3 h-3 text-cyan-400" /> {t('authorLabel')}
+                  <User className="w-3 h-3 text-gold-300" /> {t('authorLabel')}
                 </span>
                 <p className="text-xs font-bold text-slate-200 truncate">{twin.author}</p>
               </div>
@@ -105,13 +105,13 @@ export const DigitalTwinMode: React.FC = () => {
             {/* History Logs */}
             <div className="pt-4 border-t border-slate-800 space-y-2">
               <span className="text-xs font-bold text-white flex items-center gap-2">
-                <History className="w-4 h-4 text-cyan-400" /> {t('auditTitle')}
+                <History className="w-4 h-4 text-gold-300" /> {t('auditTitle')}
               </span>
               <div className="space-y-2">
                 {historyLogs.map((log, i) => (
                   <div key={i} className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
                     <span className="text-slate-300">{log.action}</span>
-                    <span className="text-[10px] font-mono-code text-cyan-400">{log.date}</span>
+                    <span className="text-[10px] font-mono-code text-gold-300">{log.date}</span>
                   </div>
                 ))}
               </div>
@@ -125,7 +125,7 @@ export const DigitalTwinMode: React.FC = () => {
         <div className="lg:col-span-5 space-y-6">
           
           <div className="glass-panel rounded-3xl p-6 border border-slate-800 text-center space-y-6">
-            <h3 className="text-lg font-bold text-white">{t('qrPhysicalTitle')}</h3>
+            <h3 className="text-xl font-semibold text-white">{t('qrPhysicalTitle')}</h3>
             <p className="text-xs text-slate-400">
               {t('qrPhysicalDesc')}
             </p>
@@ -134,11 +134,11 @@ export const DigitalTwinMode: React.FC = () => {
               <QRCodeSVG value={twinUrl} size={160} />
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono-code text-cyan-300">
+            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono-code text-gold-200">
               {twinUrl}
             </div>
 
-            <button className="w-full py-3 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-black shadow-md transition-all">
+            <button className="w-full py-3 rounded-xl text-xs font-bold bg-gold-400 hover:bg-gold-300 text-[#141008] shadow-md transition-all">
               {t('printTagBtn')}
             </button>
           </div>
