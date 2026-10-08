@@ -12,19 +12,19 @@ export const PrivacyBanner: React.FC = () => {
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-heading font-bold text-white text-base">Privacy-First Architecture</h4>
+              <h4 className="font-heading font-bold text-white text-base">Traitement Éphémère & Respect de la Vie Privée</h4>
               <p className="text-xs text-slate-400">
-                Vos photos restent privées par défaut. Chiffrement HTTPS & suppression automatique configurable.
+                Vos photos sont traitées en mémoire vive et supprimées à la fermeture de l'onglet. Aucune conservation en base de données.
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-300 font-mono-code">
             <span className="flex items-center gap-1 text-emerald-400">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Aucune publication automatique
+              <CheckCircle2 className="w-3.5 h-3.5" /> Zéro persistance serveur
             </span>
             <span className="flex items-center gap-1 text-cyan-400">
-              <Lock className="w-3.5 h-3.5" /> Chiffrement Chiffre AES-256
+              <Lock className="w-3.5 h-3.5" /> Transfert chiffré TLS 1.3 / HTTPS
             </span>
           </div>
 

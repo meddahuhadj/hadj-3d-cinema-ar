@@ -34,6 +34,7 @@ export const WebARViewer: React.FC<WebARViewerProps> = ({ modelData }) => {
   // Real world dimensions scaling (in cm)
   const [realHeightCm, setRealHeightCm] = useState<number>(30);
   const [activePreset, setActivePreset] = useState<LightingPreset>('studio');
+  const [activeLod, setActiveLod] = useState<'low' | 'medium' | 'high'>('medium');
   const [exposure, setExposure] = useState<number>(1.1);
   const [shadowIntensity, setShadowIntensity] = useState<number>(1.6);
   const [isIOS, setIsIOS] = useState(false);
@@ -232,6 +233,36 @@ export const WebARViewer: React.FC<WebARViewerProps> = ({ modelData }) => {
                 >
                   180 cm (Humain/Statue)
                 </button>
+              </div>
+            </div>
+
+            {/* LOD & Mesh Optimization Selector */}
+            <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
+                  <Layers className="w-4 h-4 text-emerald-400" />
+                  <span>Niveau de Détail (LOD) & Compression Draco</span>
+                </div>
+                <span className="text-[10px] font-mono-code text-emerald-400 font-bold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                  {activeLod === 'low' ? '25K Poly • ~1.2 MB' : activeLod === 'medium' ? '65K Poly • ~2.8 MB' : '140K Poly • ~4.8 MB'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-xs font-medium">
+                {(['low', 'medium', 'high'] as ('low' | 'medium' | 'high')[]).map((tier) => (
+                  <button
+                    key={tier}
+                    onClick={() => setActiveLod(tier)}
+                    className={`py-2 px-2 rounded-xl text-center transition-all border ${
+                      activeLod === tier
+                        ? 'bg-emerald-600/30 text-emerald-300 font-bold border-emerald-500 shadow-md'
+                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'
+                    }`}
+                  >
+                    <span className="block capitalize">{tier === 'low' ? 'Mobile (Low)' : tier === 'medium' ? 'Standard' : 'Ultra (High)'}</span>
+                    <span className="text-[10px] opacity-70">{tier === 'low' ? '60 FPS Garanti' : tier === 'medium' ? 'Équilibré' : 'Détails 4K'}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
