@@ -5,8 +5,9 @@ import { CinematicEngine } from './CinematicEngine';
 import { CameraDirector } from './CameraDirector';
 import { AnimationStudio } from './AnimationStudio';
 import { Model3DData, MaterialSettings, LightingSettings, CameraSettings, AnimationSettings } from '../../types';
-import { Sliders, Film, Camera, Sparkles, QrCode, Download, Eye, Box, Wand2 } from 'lucide-react';
+import { Sliders, Film, Camera, Sparkles, QrCode, Download, Eye, Box, Wand2, Sun, Moon } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { useTheme } from '../../i18n/ThemeContext';
 
 interface Studio3DMainProps {
   modelData: Model3DData;
@@ -26,6 +27,10 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
   const [activeSubTab, setActiveSubTab] = useState<'materials' | 'lighting' | 'camera' | 'animation'>('materials');
   const [viewMode, setViewMode] = useState<'rendered' | 'wireframe' | 'solid'>('rendered');
   const { t } = useLanguage();
+  const { isDark } = useTheme();
+
+  const [studioBackdrop, setStudioBackdrop] = useState<'light' | 'neutral' | 'dark'>(() => isDark ? 'dark' : 'light');
+  const [brightnessBoost, setBrightnessBoost] = useState<boolean>(true);
 
   const [material, setMaterial] = useState<MaterialSettings>(modelData.materials);
   const [lighting, setLighting] = useState<LightingSettings>(modelData.lighting);
@@ -101,11 +106,11 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
         <div className="lg:col-span-8 space-y-4">
           <div className="glass-panel-glow rounded-3xl p-3 border border-slate-800 relative overflow-hidden shadow-2xl h-[520px] sm:h-[600px]">
             
-            <div className="absolute top-6 left-6 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl border border-slate-800 shadow-xl">
+            <div className="absolute top-6 left-6 z-20 flex flex-wrap items-center gap-2 bg-slate-900/85 backdrop-blur-md p-1.5 rounded-2xl border border-slate-700/60 shadow-xl max-w-[calc(100%-160px)]">
               <button
                 onClick={() => setViewMode('rendered')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                  viewMode === 'rendered' ? 'bg-gold-400 text-[#141008] font-bold' : 'text-slate-400 hover:text-white'
+                  viewMode === 'rendered' ? 'bg-gold-400 text-[#141008] font-bold' : 'text-slate-300 hover:text-white'
                 }`}
               >
                 {t('renderedPBR')}
@@ -113,7 +118,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               <button
                 onClick={() => setViewMode('wireframe')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                  viewMode === 'wireframe' ? 'bg-gold-400 text-[#141008] font-bold' : 'text-slate-400 hover:text-white'
+                  viewMode === 'wireframe' ? 'bg-gold-400 text-[#141008] font-bold' : 'text-slate-300 hover:text-white'
                 }`}
               >
                 {t('wireframeMode')}
@@ -121,10 +126,37 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               <button
                 onClick={() => setViewMode('solid')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                  viewMode === 'solid' ? 'bg-gold-400 text-[#141008] font-bold' : 'text-slate-400 hover:text-white'
+                  viewMode === 'solid' ? 'bg-gold-400 text-[#141008] font-bold' : 'text-slate-300 hover:text-white'
                 }`}
               >
                 {t('solidMode')}
+              </button>
+
+              <div className="hidden sm:block h-4 w-px bg-slate-700/80 mx-0.5" />
+
+              {/* Quick Studio Backdrop Switcher */}
+              <button
+                onClick={() => {
+                  setStudioBackdrop(prev => prev === 'light' ? 'neutral' : prev === 'neutral' ? 'dark' : 'light');
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-slate-700 text-gold-300 border border-slate-700/80 transition-all shadow-sm"
+                title="Changer le fond studio (Clair / Neutre / Sombre)"
+              >
+                {studioBackdrop === 'light' ? '☀️ Fond Clair' : studioBackdrop === 'neutral' ? '🎬 Fond Neutre' : '🌙 Fond Sombre'}
+              </button>
+
+              {/* Quick Brightness / Lumière Boost Toggle */}
+              <button
+                onClick={() => setBrightnessBoost(prev => !prev)}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                  brightnessBoost
+                    ? 'bg-amber-400/20 border-amber-400/60 text-amber-300 shadow-sm shadow-amber-400/20 font-bold'
+                    : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:text-white'
+                }`}
+                title="Activer / désactiver l'éclairage studio haute luminosité"
+              >
+                <Sun className="w-3.5 h-3.5 text-amber-400" />
+                <span>{brightnessBoost ? 'Lumière +' : 'Lumière Normale'}</span>
               </button>
             </div>
 
@@ -140,6 +172,8 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               cameraSettings={camera}
               animation={animation}
               viewMode={viewMode}
+              studioBackdrop={studioBackdrop}
+              brightnessBoost={brightnessBoost}
             />
 
             <div className="absolute bottom-6 left-6 z-20 bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-800 text-xs text-slate-300 flex items-center gap-3">

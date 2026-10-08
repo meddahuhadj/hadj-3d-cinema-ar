@@ -2,8 +2,10 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { processNeuralImage } from '../../utils/neuralDepth';
 import { Model3DData, MaterialSettings, LightingSettings, CameraSettings, AnimationSettings } from '../../types';
+import { useTheme } from '../../i18n/ThemeContext';
 
 interface Viewport3DProps {
   modelData: Model3DData;
@@ -12,6 +14,8 @@ interface Viewport3DProps {
   cameraSettings: CameraSettings;
   animation: AnimationSettings;
   viewMode: 'rendered' | 'wireframe' | 'solid' | 'depth' | 'pointcloud';
+  studioBackdrop?: 'light' | 'neutral' | 'dark';
+  brightnessBoost?: boolean;
 }
 
 export const Viewport3D: React.FC<Viewport3DProps> = ({
@@ -21,9 +25,16 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
   cameraSettings,
   animation,
   viewMode,
+  studioBackdrop,
+  brightnessBoost = true,
 }) => {
+  const { isDark } = useTheme();
+  const effectiveBackdrop = studioBackdrop || (isDark ? 'dark' : 'light');
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const gridRef = useRef<THREE.GridHelper | null>(null);
   const meshRef = useRef<THREE.Group | null>(null);
   const materialRef = useRef<THREE.MeshStandardMaterial | null>(null);
   const lightsGroupRef = useRef<THREE.Group | null>(null);
@@ -35,25 +46,57 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
     const height = canvas.parentElement?.clientHeight || 600;
 
     // 1. Scene Setup
+    let bgColor = 0x14120f;
+    let gridMain = 0xd4af37;
+    let gridSub = 0x30271b;
+    if (effectiveBackdrop === 'light') {
+      bgColor = 0xf4f0e6;
+      gridMain = 0xbda052;
+      gridSub = 0xd6cfbf;
+    } else if (effectiveBackdrop === 'neutral') {
+      bgColor = 0x2e2922;
+      gridMain = 0xd4af37;
+      gridSub = 0x4f4637;
+    }
+
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0908);
+    scene.background = new THREE.Color(bgColor);
     sceneRef.current = scene;
 
     // Grid Floor
-    const gridHelper = new THREE.GridHelper(20, 20, 0xd4af37, 0x241f16);
+    const gridHelper = new THREE.GridHelper(20, 20, gridMain, gridSub);
     gridHelper.position.y = -1.5;
     scene.add(gridHelper);
+    gridRef.current = gridHelper;
 
     // 2. Camera Setup
     const camera = new THREE.PerspectiveCamera(cameraSettings.focalLength, width / height, 0.1, 1000);
     camera.position.set(0, 1.5, 4.5);
 
-    // 3. Renderer Setup
+    // 3. Renderer Setup with ACES Tone Mapping & sRGB Color Space
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = lighting.shadows;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = brightnessBoost ? 1.55 : 1.35;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    rendererRef.current = renderer;
+
+    // Room Environment for rich photorealistic PBR lighting & reflections
+    try {
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      pmremGenerator.compileEquirectangularShader();
+      const roomEnvironment = new RoomEnvironment();
+      const envTexture = pmremGenerator.fromScene(roomEnvironment, 0.04).texture;
+      scene.environment = envTexture;
+      scene.environmentIntensity = brightnessBoost ? 1.4 : 1.1;
+      roomEnvironment.dispose();
+      pmremGenerator.dispose();
+    } catch (e) {
+      console.warn('Could not initialize RoomEnvironment:', e);
+    }
 
     // 4. Controls
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -61,28 +104,52 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
     controls.dampingFactor = 0.05;
     controls.maxPolarAngle = Math.PI / 2 + 0.1; // Don't go far below floor
 
-    // 5. Lighting Setup Group
+    // 5. Lighting Setup Group (Multi-directional cinematic studio rig)
     const lightsGroup = new THREE.Group();
     scene.add(lightsGroup);
     lightsGroupRef.current = lightsGroup;
 
-    const keyLight = new THREE.DirectionalLight(lighting.keyLightColor, lighting.keyLightIntensity);
-    keyLight.position.set(5, 6, 5);
-    keyLight.castShadow = true;
+    const mult = brightnessBoost ? 1.35 : 1.0;
+
+    // [0] Hemisphere Ambient Sky & Ground Light (prevents any dark pitch-black shadows)
+    const hemiLight = new THREE.HemisphereLight(0xfffbf0, 0x473d2f, (brightnessBoost ? 1.8 : 1.4));
+    lightsGroup.add(hemiLight);
+
+    // [1] Key Directional Light
+    const keyLight = new THREE.DirectionalLight(
+      lighting.keyLightColor || '#ffffff',
+      Math.max(lighting.keyLightIntensity || 3.5, 3.2) * mult
+    );
+    keyLight.position.set(5, 7, 5);
+    keyLight.castShadow = lighting.shadows;
     lightsGroup.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(lighting.fillLightColor, lighting.fillLightIntensity);
-    fillLight.position.set(-5, 2, -3);
+    // [2] Fill Directional Light
+    const fillLight = new THREE.DirectionalLight(
+      lighting.fillLightColor || '#faeed8',
+      Math.max(lighting.fillLightIntensity || 2.2, 2.0) * mult
+    );
+    fillLight.position.set(-5, 4, -3);
     lightsGroup.add(fillLight);
 
-    const rimLight = new THREE.DirectionalLight(lighting.rimLightColor, lighting.rimLightIntensity);
-    rimLight.position.set(0, 5, -6);
+    // [3] Rim / Backlight
+    const rimLight = new THREE.DirectionalLight(
+      lighting.rimLightColor || '#f5dfa8',
+      Math.max(lighting.rimLightIntensity || 2.4, 2.2) * mult
+    );
+    rimLight.position.set(0, 6, -6);
     lightsGroup.add(rimLight);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    // [4] Front Fill Light (Direct camera-facing illumination for photos and frontal textures)
+    const frontFill = new THREE.DirectionalLight(0xffffff, (brightnessBoost ? 2.2 : 1.6));
+    frontFill.position.set(0, 2, 7);
+    lightsGroup.add(frontFill);
+
+    // [5] Ambient Baseline Light
+    const ambientLight = new THREE.AmbientLight(0xffffff, (brightnessBoost ? 1.6 : 1.2));
     lightsGroup.add(ambientLight);
 
-    // 6. Build High Quality Procedural 3D Mesh
+    // 6. Build High Quality 3D Mesh
     const mainGroup = new THREE.Group();
     scene.add(mainGroup);
     meshRef.current = mainGroup;
@@ -126,6 +193,10 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
             if ((child as THREE.Mesh).isMesh) {
               child.castShadow = true;
               child.receiveShadow = true;
+              const m = (child as THREE.Mesh).material;
+              if (m && (m as THREE.MeshStandardMaterial).isMeshStandardMaterial) {
+                (m as THREE.MeshStandardMaterial).envMapIntensity = 1.35;
+              }
             }
           });
 
@@ -153,15 +224,16 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
           // 1. Front 3D Relief Mesh with True Photo PBR Texture & Neural Displacement
           const frontGeo = new THREE.PlaneGeometry(baseWidth, baseHeight, 220, 220);
           const neuralFrontMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(0xffffff), // Pure white so photo texture colors are 100% vibrant & bright
             map: neural.diffuseTexture,
             displacementMap: neural.depthTexture,
-            displacementScale: 0.65,
-            displacementBias: -0.08,
+            displacementScale: 0.52,
+            displacementBias: -0.05,
             normalMap: neural.normalTexture,
-            normalScale: new THREE.Vector2(material.normalMapIntensity || 1.8, material.normalMapIntensity || 1.8),
+            normalScale: new THREE.Vector2(material.normalMapIntensity || 1.2, material.normalMapIntensity || 1.2),
             roughnessMap: neural.roughnessTexture,
-            metalness: material.metallic,
-            roughness: material.roughness,
+            metalness: Math.min(0.2, material.metallic),
+            roughness: Math.max(0.25, material.roughness),
             transparent: true,
             alphaTest: 0.05,
             wireframe: viewMode === 'wireframe' || material.wireframe,
@@ -179,15 +251,16 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
           const backGeo = new THREE.PlaneGeometry(baseWidth, baseHeight, 220, 220);
           backGeo.rotateY(Math.PI);
           const neuralBackMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(0xffffff), // Pure white
             map: neural.diffuseTexture,
             displacementMap: neural.depthTexture,
-            displacementScale: 0.45,
-            displacementBias: -0.06,
+            displacementScale: 0.40,
+            displacementBias: -0.04,
             normalMap: neural.normalTexture,
-            normalScale: new THREE.Vector2(material.normalMapIntensity || 1.4, material.normalMapIntensity || 1.4),
+            normalScale: new THREE.Vector2(material.normalMapIntensity || 1.2, material.normalMapIntensity || 1.2),
             roughnessMap: neural.roughnessTexture,
-            metalness: Math.min(1.0, material.metallic + 0.1),
-            roughness: material.roughness,
+            metalness: Math.min(0.2, material.metallic),
+            roughness: Math.max(0.3, material.roughness),
             transparent: true,
             alphaTest: 0.05,
             wireframe: viewMode === 'wireframe' || material.wireframe,
@@ -200,13 +273,13 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
           backMesh.receiveShadow = true;
           mainGroup.add(backMesh);
 
-          // 3. Volumetric Rim Ring / Beveled Rim Contour
+          // 3. Volumetric Rim Ring / Beveled Rim Contour - Satin Gold/Bronze finish, never pitch black!
           const rimThickness = 0.16;
           const rimGeo = new THREE.BoxGeometry(baseWidth * 0.98, baseHeight * 0.98, rimThickness);
           const rimMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(material.colorTint || '#241f16'),
-            metalness: 0.85,
-            roughness: 0.25,
+            color: new THREE.Color(0xd4af37),
+            metalness: 0.65,
+            roughness: 0.35,
             wireframe: viewMode === 'wireframe' || material.wireframe,
           });
           const rimMesh = new THREE.Mesh(rimGeo, rimMat);
@@ -714,33 +787,97 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
       materialRef.current.metalness = material.metallic;
       materialRef.current.roughness = material.roughness;
       materialRef.current.wireframe = viewMode === 'wireframe' || material.wireframe;
-      if (material.colorTint) {
+      // Do NOT overwrite photo texture with dark tint for photo models!
+      if (material.colorTint && !modelData.userImageUrl && modelData.proceduralType !== 'neural_depth') {
         materialRef.current.color.set(material.colorTint);
       }
     }
-  }, [material, viewMode]);
+  }, [material, viewMode, modelData]);
+
+  // Update background and grid dynamically when backdrop changes
+  useEffect(() => {
+    if (sceneRef.current) {
+      let bgColor = 0x14120f;
+      let gridMain = 0xd4af37;
+      let gridSub = 0x30271b;
+      if (effectiveBackdrop === 'light') {
+        bgColor = 0xf4f0e6;
+        gridMain = 0xbda052;
+        gridSub = 0xd6cfbf;
+      } else if (effectiveBackdrop === 'neutral') {
+        bgColor = 0x2e2922;
+        gridMain = 0xd4af37;
+        gridSub = 0x4f4637;
+      }
+      sceneRef.current.background = new THREE.Color(bgColor);
+
+      if (gridRef.current) {
+        sceneRef.current.remove(gridRef.current);
+        gridRef.current.geometry.dispose();
+        (gridRef.current.material as THREE.Material).dispose();
+        const newGrid = new THREE.GridHelper(20, 20, gridMain, gridSub);
+        newGrid.position.y = -1.5;
+        sceneRef.current.add(newGrid);
+        gridRef.current = newGrid;
+      }
+    }
+  }, [effectiveBackdrop]);
+
+  // Update exposure and environment intensity dynamically
+  useEffect(() => {
+    if (rendererRef.current) {
+      rendererRef.current.toneMappingExposure = brightnessBoost ? 1.55 : 1.35;
+    }
+    if (sceneRef.current) {
+      sceneRef.current.environmentIntensity = brightnessBoost ? 1.4 : 1.1;
+    }
+  }, [brightnessBoost]);
 
   // Update lighting dynamically
   useEffect(() => {
     if (lightsGroupRef.current) {
+      const mult = brightnessBoost ? 1.35 : 1.0;
       const lights = lightsGroupRef.current.children;
-      if (lights[0] && lights[0] instanceof THREE.DirectionalLight) {
-        lights[0].color.set(lighting.keyLightColor);
-        lights[0].intensity = lighting.keyLightIntensity;
+      // [0] hemiLight
+      if (lights[0] && lights[0] instanceof THREE.HemisphereLight) {
+        lights[0].intensity = brightnessBoost ? 1.8 : 1.4;
       }
+      // [1] keyLight
       if (lights[1] && lights[1] instanceof THREE.DirectionalLight) {
-        lights[1].color.set(lighting.fillLightColor);
-        lights[1].intensity = lighting.fillLightIntensity;
+        lights[1].color.set(lighting.keyLightColor || '#ffffff');
+        lights[1].intensity = Math.max(lighting.keyLightIntensity || 3.5, 3.2) * mult;
       }
+      // [2] fillLight
       if (lights[2] && lights[2] instanceof THREE.DirectionalLight) {
-        lights[2].color.set(lighting.rimLightColor);
-        lights[2].intensity = lighting.rimLightIntensity;
+        lights[2].color.set(lighting.fillLightColor || '#faeed8');
+        lights[2].intensity = Math.max(lighting.fillLightIntensity || 2.2, 2.0) * mult;
+      }
+      // [3] rimLight
+      if (lights[3] && lights[3] instanceof THREE.DirectionalLight) {
+        lights[3].color.set(lighting.rimLightColor || '#f5dfa8');
+        lights[3].intensity = Math.max(lighting.rimLightIntensity || 2.4, 2.2) * mult;
+      }
+      // [4] frontFill
+      if (lights[4] && lights[4] instanceof THREE.DirectionalLight) {
+        lights[4].intensity = brightnessBoost ? 2.2 : 1.6;
+      }
+      // [5] ambientLight
+      if (lights[5] && lights[5] instanceof THREE.AmbientLight) {
+        lights[5].intensity = brightnessBoost ? 1.6 : 1.2;
       }
     }
-  }, [lighting]);
+  }, [lighting, brightnessBoost]);
 
   return (
-    <div className="w-full h-full relative overflow-hidden bg-slate-950 flex items-center justify-center">
+    <div
+      className={`w-full h-full relative overflow-hidden flex items-center justify-center transition-colors duration-300 ${
+        effectiveBackdrop === 'light'
+          ? 'bg-[#f4f0e6]'
+          : effectiveBackdrop === 'neutral'
+          ? 'bg-[#2e2922]'
+          : 'bg-[#14120f]'
+      }`}
+    >
       <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
     </div>
   );

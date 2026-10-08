@@ -172,19 +172,19 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
         preset: 'Product',
         wireframe: false,
         textureEnhanceAI: true,
-        colorTint: '#17140e'
+        colorTint: '#ffffff'
       },
       lighting: {
         preset: 'Studio',
         keyLightColor: '#ffffff',
-        keyLightIntensity: 3.2,
-        fillLightColor: '#ddd4c0',
-        fillLightIntensity: 2.0,
+        keyLightIntensity: 3.8,
+        fillLightColor: '#f7f0e1',
+        fillLightIntensity: 2.5,
         rimLightColor: '#f5e2a8',
-        rimLightIntensity: 2.2,
+        rimLightIntensity: 2.6,
         hdriPreset: 'Studio',
-        hdriIntensity: 1.2,
-        environmentBlur: 0.4,
+        hdriIntensity: 1.4,
+        environmentBlur: 0.3,
         shadows: true
       },
       camera: {

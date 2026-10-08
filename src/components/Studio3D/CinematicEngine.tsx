@@ -12,14 +12,14 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
   const { t } = useLanguage();
 
   const lightingPresets = [
-    { id: 'Hollywood', label: t('lightHollywood'), key: '#ffffff', fill: '#c9bfa8', rim: '#f59e0b', hdri: 'Studio Neutral' },
+    { id: 'Hollywood', label: t('lightHollywood'), key: '#ffffff', fill: '#ede2ce', rim: '#f59e0b', hdri: 'Studio Neutral' },
     { id: 'Cyberpunk', label: t('lightCyberpunk'), key: '#d4af37', fill: '#cf9b4a', rim: '#e8c87a', hdri: 'Neon City Night' },
     { id: 'Luxury', label: t('lightLuxury'), key: '#fbbf24', fill: '#f59e0b', rim: '#d97706', hdri: 'Golden Hour' },
-    { id: 'Dark Cinema', label: t('lightDarkCinema'), key: '#e8c87a', fill: '#241f16', rim: '#f5e2a8', hdri: 'Moody Dark' },
-    { id: 'Sci-Fi', label: t('lightSciFi'), key: '#a8842c', fill: '#8a6a1f', rim: '#e8c87a', hdri: 'Hangar Blue' },
+    { id: 'Dark Cinema', label: t('lightDarkCinema'), key: '#f5e2a8', fill: '#73634e', rim: '#f5e2a8', hdri: 'Moody Dark' },
+    { id: 'Sci-Fi', label: t('lightSciFi'), key: '#d4af37', fill: '#a8842c', rim: '#e8c87a', hdri: 'Hangar Blue' },
     { id: 'Golden Hour', label: t('lightGoldenHour'), key: '#f97316', fill: '#fbbf24', rim: '#ea580c', hdri: 'Outdoor Sunset' },
-    { id: 'Studio', label: t('lightStudio'), key: '#ffffff', fill: '#cfc5ae', rim: '#ffffff', hdri: 'Soft Studio' },
-    { id: 'Documentary', label: t('lightDocumentary'), key: '#fef08a', fill: '#c9bfa8', rim: '#ddd4c0', hdri: 'Natural Daylight' },
+    { id: 'Studio', label: t('lightStudio'), key: '#ffffff', fill: '#faeed8', rim: '#ffffff', hdri: 'Soft Studio' },
+    { id: 'Documentary', label: t('lightDocumentary'), key: '#fef08a', fill: '#ede2ce', rim: '#ddd4c0', hdri: 'Natural Daylight' },
   ];
 
   const applyLightingPreset = (presetObj: typeof lightingPresets[0]) => {
@@ -29,7 +29,10 @@ export const CinematicEngine: React.FC<CinematicEngineProps> = ({ lighting, setL
       keyLightColor: presetObj.key,
       fillLightColor: presetObj.fill,
       rimLightColor: presetObj.rim,
-      hdriPreset: presetObj.hdri
+      hdriPreset: presetObj.hdri,
+      keyLightIntensity: Math.max(prev.keyLightIntensity, 3.5),
+      fillLightIntensity: Math.max(prev.fillLightIntensity, 2.2),
+      rimLightIntensity: Math.max(prev.rimLightIntensity, 2.2)
     }));
   };
 

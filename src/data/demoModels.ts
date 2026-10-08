@@ -91,19 +91,19 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Product',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#241f16'
+      colorTint: '#5a4732'
     },
     lighting: {
       preset: 'Studio',
       keyLightColor: '#ffffff',
-      keyLightIntensity: 3.0,
-      fillLightColor: '#cfc5ae',
-      fillLightIntensity: 1.8,
+      keyLightIntensity: 3.6,
+      fillLightColor: '#ede2ce',
+      fillLightIntensity: 2.4,
       rimLightColor: '#ffffff',
-      rimLightIntensity: 1.5,
+      rimLightIntensity: 2.2,
       hdriPreset: 'Soft Studio',
-      hdriIntensity: 1.2,
-      environmentBlur: 0.5,
+      hdriIntensity: 1.4,
+      environmentBlur: 0.4,
       shadows: true
     },
     camera: {
@@ -281,19 +281,19 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
       preset: 'Product',
       wireframe: false,
       textureEnhanceAI: true,
-      colorTint: '#241f16'
+      colorTint: '#4a3f32'
     },
     lighting: {
       preset: 'Studio',
       keyLightColor: '#ffffff',
-      keyLightIntensity: 3.0,
-      fillLightColor: '#cfc5ae',
-      fillLightIntensity: 1.8,
+      keyLightIntensity: 3.8,
+      fillLightColor: '#ede2ce',
+      fillLightIntensity: 2.5,
       rimLightColor: '#ffffff',
-      rimLightIntensity: 1.5,
+      rimLightIntensity: 2.2,
       hdriPreset: 'Soft Studio',
-      hdriIntensity: 1.2,
-      environmentBlur: 0.5,
+      hdriIntensity: 1.4,
+      environmentBlur: 0.4,
       shadows: true
     },
     camera: {

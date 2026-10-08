@@ -121,11 +121,11 @@ export const processNeuralImage = (imageUrl: string): Promise<NeuralTextures> =>
               // High-fidelity depth calculation
               depth = 0.25 + centralBias * 0.45 + (1.0 - Math.abs(lum - 0.5) * 1.2) * 0.3;
               depth = Math.min(Math.max(depth, 0.05), 1.0);
-              alpha = 255;
+              alpha = a;
             } else {
-              // Smooth falloff to zero for background
-              depth = Math.max(0, centralBias * 0.15);
-              alpha = Math.floor(centralBias * 180);
+              // Smooth background depth
+              depth = Math.max(0.02, centralBias * 0.12);
+              alpha = a;
             }
 
             grayBuffer[y * width + x] = depth;
