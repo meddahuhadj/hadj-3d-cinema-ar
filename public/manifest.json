@@ -1,0 +1,37 @@
+{
+  "name": "PHOTO2CINE3D — AI Photo to Cinematic 3D WebAR",
+  "short_name": "PHOTO2CINE3D",
+  "description": "Plateforme IA de conversion Photo → 3D Cinématique & Réalité Augmentée WebAR instantanée sans application.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#07090e",
+  "theme_color": "#06b6d4",
+  "categories": ["graphics", "productivity", "utilities", "photo"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Importer Photo",
+      "url": "/#upload",
+      "description": "Scanner un objet ou véhicule"
+    },
+    {
+      "name": "Studio 3D",
+      "url": "/#studio",
+      "description": "Ouvrir le Studio 3D Cinéma"
+    },
+    {
+      "name": "WebAR Instantané",
+      "url": "/#webar",
+      "description": "Visualiser en Réalité Augmentée"
+    }
+  ]
+}
