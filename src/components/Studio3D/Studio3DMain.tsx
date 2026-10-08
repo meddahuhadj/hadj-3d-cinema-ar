@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Viewport3D } from './Viewport3D';
 import { MaterialStudio } from './MaterialStudio';
 import { CinematicEngine } from './CinematicEngine';
@@ -15,6 +15,7 @@ interface Studio3DMainProps {
   onOpenExport: () => void;
   onOpenAIAssistant: () => void;
   onOpenOptimizer: () => void;
+  onChangePhoto?: () => void;
 }
 
 export const Studio3DMain: React.FC<Studio3DMainProps> = ({
@@ -23,6 +24,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
   onOpenExport,
   onOpenAIAssistant,
   onOpenOptimizer,
+  onChangePhoto,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'materials' | 'lighting' | 'camera' | 'animation'>('materials');
   const [viewMode, setViewMode] = useState<'rendered' | 'wireframe' | 'solid'>('rendered');
@@ -36,6 +38,14 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
   const [lighting, setLighting] = useState<LightingSettings>(modelData.lighting);
   const [camera, setCamera] = useState<CameraSettings>(modelData.camera);
   const [animation, setAnimation] = useState<AnimationSettings>(modelData.animation);
+
+  // Synchronize state immediately when a new model or photo is selected
+  useEffect(() => {
+    setMaterial(modelData.materials);
+    setLighting(modelData.lighting);
+    setCamera(modelData.camera);
+    setAnimation(modelData.animation);
+  }, [modelData.id, modelData.userImageUrl, modelData.thumbnail]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -65,6 +75,17 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
 
         {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2">
+          {onChangePhoto && (
+            <button
+              onClick={onChangePhoto}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 transition-all shadow-sm"
+              title="Importer une nouvelle photo"
+            >
+              <Camera className="w-4 h-4 text-amber-400" />
+              <span>Changer photo</span>
+            </button>
+          )}
+
           <button
             onClick={onOpenAIAssistant}
             className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-gold-200 border border-slate-700 transition-all"
@@ -166,6 +187,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
             </div>
 
             <Viewport3D
+              key={`${modelData.id}-${modelData.userImageUrl || ''}`}
               modelData={modelData}
               material={material}
               lighting={lighting}

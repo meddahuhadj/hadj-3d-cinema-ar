@@ -30,7 +30,10 @@ export function App() {
   const [isExportOpen, setIsExportOpen] = useState(false);
 
   // Tab Handlers
-  const handleStartUpload = () => setActiveTab('upload');
+  const handleStartUpload = () => {
+    setUserPhotos([]);
+    setActiveTab('upload');
+  };
   const handleTryWebAR = () => setActiveTab('webar');
   const handleWatchDemo = () => {
     setActiveModel(INITIAL_DEMO_MODELS[0]);
@@ -110,11 +113,13 @@ export function App() {
 
         {activeTab === 'studio' && (
           <Studio3DMain
+            key={`${activeModel.id}-${activeModel.userImageUrl || ''}`}
             modelData={activeModel}
             onOpenAR={() => setActiveTab('webar')}
             onOpenExport={() => setIsExportOpen(true)}
             onOpenAIAssistant={() => setIsAIAssistantOpen(true)}
             onOpenOptimizer={() => setIsOptimizerOpen(true)}
+            onChangePhoto={handleStartUpload}
           />
         )}
 

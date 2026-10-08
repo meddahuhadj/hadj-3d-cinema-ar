@@ -82,18 +82,22 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
             setLogs(prev => [...prev, '[SUCCESS] AI 3D Reconstruction completed!']);
             
             let finalModel = activeModel ? { ...activeModel } : undefined;
-            const photoUrl = (photos && photos.length > 0) ? photos[0].url : undefined;
-            if (status.modelUrl) {
-              if (finalModel) {
-                finalModel.modelUrl = status.modelUrl;
-                if (status.thumbnailUrl) finalModel.thumbnail = status.thumbnailUrl;
-                if (photoUrl) finalModel.userImageUrl = photoUrl;
-              } else {
-                finalModel = {
-                  id: 'gen-' + Date.now(),
-                  title: 'Modèle 3D Reconstruit',
-                  category: 'product',
-                  thumbnail: status.thumbnailUrl || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600',
+            const activePhoto = (photos && photos.length > 0) ? photos[0] : undefined;
+            const photoUrl = activePhoto?.url || activeModel?.userImageUrl;
+            if (finalModel) {
+              finalModel.id = 'recon-' + Date.now();
+              if (status.modelUrl) finalModel.modelUrl = status.modelUrl;
+              if (photoUrl) {
+                finalModel.userImageUrl = photoUrl;
+                finalModel.thumbnail = photoUrl;
+              }
+            } else if (status.modelUrl) {
+              finalModel = {
+                id: 'gen-' + Date.now(),
+                title: activePhoto?.name ? activePhoto.name.replace(/\.[^/.]+$/, "") : 'Modèle 3D Reconstruit',
+                category: 'product',
+                thumbnail: photoUrl || status.thumbnailUrl || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600',
+                userImageUrl: photoUrl,
                   photoCount: photos.length || 1,
                   polygonCount: 45000,
                   optimizedPolyCount: 22000,
@@ -153,7 +157,6 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
                   }
                 };
               }
-            }
             
             setTimeout(() => {
               setIsProcessing(false);
@@ -180,35 +183,36 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
       ]);
 
       // Détection intelligente du sujet
-      const rawName = (photos && photos.length > 0 ? photos[0].name : 'Modèle Reconstruit');
+      const activePhoto = (photos && photos.length > 0) ? photos[0] : undefined;
+      const rawName = activePhoto ? activePhoto.name : (activeModel?.title || 'Modèle Reconstruit');
       const cleanTitle = rawName.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
       const formattedTitle = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
       const fileName = rawName.toLowerCase();
       
       let modelTitle = formattedTitle || 'Modèle 3D Haute-Fidélité';
       let category: 'vehicle' | 'product' | 'object' = 'product';
-      let colorTint = '#d4af37';
+      let colorTint = '#ffffff';
 
       if (fileName.includes('rolls') || fileName.includes('cullinan') || fileName.includes('car') || fileName.includes('voiture') || fileName.includes('suv') || fileName.includes('auto')) {
         modelTitle = formattedTitle || 'Véhicule 3D';
         category = 'vehicle';
-        colorTint = '#17140e';
+        colorTint = '#ffffff';
       } else if (fileName.includes('chaise') || fileName.includes('chair') || fileName.includes('fauteuil')) {
         modelTitle = formattedTitle || 'Mobilier Ergonomique';
         category = 'product';
-        colorTint = '#241f16';
+        colorTint = '#ffffff';
       } else if (fileName.includes('congelateur') || fileName.includes('freezer') || fileName.includes('sharbo')) {
         modelTitle = formattedTitle || 'Électroménager';
         category = 'product';
-        colorTint = '#f6f1e7';
+        colorTint = '#ffffff';
       } else if (fileName.includes('shoe') || fileName.includes('sneaker') || fileName.includes('basket')) {
         modelTitle = formattedTitle || 'Chaussure Sneaker';
         category = 'product';
-        colorTint = '#d4af37';
+        colorTint = '#ffffff';
       } else if (fileName.includes('camera') || fileName.includes('photo')) {
         modelTitle = formattedTitle || 'Appareil Optique';
         category = 'object';
-        colorTint = '#241f16';
+        colorTint = '#ffffff';
       }
 
       setLogs(prev => [...prev, `[NEURAL ENGINE] Sujet identifié : ${modelTitle} (${category})`]);
@@ -232,7 +236,7 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
             `[SUCCESS] Modèle 3D prêt pour le Studio Cinéma & WebAR.`
           ]);
 
-          const userPhotoUrl = (photos && photos.length > 0) ? photos[0].url : 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600';
+          const userPhotoUrl = activePhoto ? activePhoto.url : (activeModel?.userImageUrl || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600');
 
           const fallbackModel: Model3DData = {
             id: 'cine-' + Date.now(),

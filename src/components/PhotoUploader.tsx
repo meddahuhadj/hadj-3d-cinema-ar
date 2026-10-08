@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Camera, Trash2, CheckCircle2, Info, Sparkles, Image as ImageIcon, RotateCw, ArrowRight, Wand2, Cpu } from 'lucide-react';
+import { Upload, Camera, Trash2, CheckCircle2, Info, Sparkles, Image as ImageIcon, RotateCw, ArrowRight, Wand2, Cpu, Plus, RefreshCw } from 'lucide-react';
 import { PhotoItem, Model3DData } from '../types';
 import { INITIAL_DEMO_MODELS } from '../data/demoModels';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -20,7 +20,9 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   const [dragActive, setDragActive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('chest_freezer');
+  const [primaryIndex, setPrimaryIndex] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputAppendRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
 
   const targetCategories = [
@@ -75,17 +77,24 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       : Math.min(95, Math.floor(45 + photos.length * 1.25))
   );
 
-  const handleFiles = (files: FileList | File[]) => {
+  const handleFiles = (files: FileList | File[], append = false) => {
     const fileList = Array.from(files);
+    if (fileList.length === 0) return;
+
     const newPhotos: PhotoItem[] = fileList.map((file, idx) => ({
-      id: `photo-${Date.now()}-${idx}`,
+      id: `photo-${Date.now()}-${idx}-${Math.random().toString(36).substring(2, 6)}`,
       url: URL.createObjectURL(file),
       file: file,
       name: file.name,
       size: file.size,
-      quality: Math.floor(80 + Math.random() * 18),
+      quality: Math.floor(82 + Math.random() * 16),
       status: 'ready'
     }));
+
+    // Reset input value so re-selecting same file fires onChange
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
 
     // Intelligent AI Filename Detection
     const hasCar = fileList.some(f => {
@@ -134,24 +143,32 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       if (hasDrone) setSelectedCategoryId('drone');
     }
 
-    setPhotos(prev => [...prev, ...newPhotos]);
+    if (append) {
+      setPhotos(prev => [...newPhotos, ...prev]);
+      setPrimaryIndex(0);
+    } else {
+      // Replaces previous photos so the user's fresh upload is immediately used!
+      setPhotos(newPhotos);
+      setPrimaryIndex(0);
+    }
   };
 
   const handleProceed = () => {
+    const activePhoto = photos[primaryIndex] || photos[0];
     let cleanTitle = 'Objet / Produit 3D Reconstruit';
-    if (photos.length > 0) {
-      const rawName = photos[0].name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+    if (activePhoto) {
+      const rawName = activePhoto.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
       cleanTitle = rawName.charAt(0).toUpperCase() + rawName.slice(1);
     }
 
-    const firstPhotoUrl = photos.length > 0 ? photos[0].url : 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80';
+    const activePhotoUrl = activePhoto ? activePhoto.url : 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80';
 
     const generatedModel: Model3DData = {
       id: `recon-${Date.now()}`,
       title: cleanTitle,
       category: 'product',
-      thumbnail: firstPhotoUrl,
-      userImageUrl: firstPhotoUrl,
+      thumbnail: activePhotoUrl,
+      userImageUrl: activePhotoUrl,
       photoCount: photos.length || 1,
       polygonCount: 84000,
       optimizedPolyCount: 32000,
@@ -233,7 +250,13 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   };
 
   const removePhoto = (id: string) => {
-    setPhotos(prev => prev.filter(p => p.id !== id));
+    setPhotos(prev => {
+      const next = prev.filter(p => p.id !== id);
+      if (primaryIndex >= next.length) {
+        setPrimaryIndex(Math.max(0, next.length - 1));
+      }
+      return next;
+    });
   };
 
   const loadSamplePhotos = () => {
@@ -318,7 +341,15 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
               multiple
               accept="image/*,.heic"
               className="hidden"
-              onChange={e => e.target.files && handleFiles(e.target.files)}
+              onChange={e => e.target.files && handleFiles(e.target.files, false)}
+            />
+            <input
+              ref={fileInputAppendRef}
+              type="file"
+              multiple
+              accept="image/*,.heic"
+              className="hidden"
+              onChange={e => e.target.files && handleFiles(e.target.files, true)}
             />
 
             <div className="w-16 h-16 rounded-2xl bg-gold-950/80 border border-gold-800/60 text-gold-300 flex items-center justify-center mx-auto mb-4 shadow-xl">
@@ -355,40 +386,97 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 
           {photos.length > 0 && (
             <div className="glass-panel rounded-3xl p-6 border border-slate-800 space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
                 <div className="flex items-center gap-2 text-sm font-bold text-white">
                   <ImageIcon className="w-4 h-4 text-gold-300" />
                   <span>{t('importedPhotos')} ({photos.length})</span>
                 </div>
-                <button
-                  onClick={() => setPhotos([])}
-                  className="text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1"
-                >
-                  <Trash2 className="w-3.5 h-3.5" /> {t('deleteAll')}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (fileInputAppendRef.current) {
+                        fileInputAppendRef.current.value = '';
+                        fileInputAppendRef.current.click();
+                      }
+                    }}
+                    className="text-xs text-gold-300 hover:text-gold-200 font-semibold px-2.5 py-1 rounded-lg bg-gold-950/60 border border-gold-800/80 flex items-center gap-1.5 transition-all"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Ajouter angle
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPhotos([]);
+                      setPrimaryIndex(0);
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                        fileInputRef.current.click();
+                      }
+                    }}
+                    className="text-xs text-amber-300 hover:text-amber-200 font-semibold px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 flex items-center gap-1.5 transition-all"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Remplacer photo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPhotos([]);
+                      setPrimaryIndex(0);
+                    }}
+                    className="text-xs text-rose-400 hover:text-rose-300 px-2 py-1 flex items-center gap-1"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> {t('deleteAll')}
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[360px] overflow-y-auto pr-1">
-                {photos.map((photo, i) => (
-                  <div key={photo.id} className="group relative rounded-xl overflow-hidden border border-slate-800 bg-slate-900 shadow-md">
-                    <img
-                      src={photo.url}
-                      alt={photo.name}
-                      className="w-full h-28 object-cover group-hover:scale-105 transition-transform"
-                    />
-                    <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity p-2 flex flex-col justify-between">
-                      <button
-                        onClick={() => removePhoto(photo.id)}
-                        className="self-end p-1.5 rounded-lg bg-rose-500 text-white"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                      <div className="text-[10px] font-mono-code text-slate-200 truncate">
-                        #{i + 1} {photo.name}
+                {photos.map((photo, i) => {
+                  const isPrimary = i === primaryIndex;
+                  return (
+                    <div
+                      key={photo.id}
+                      onClick={() => setPrimaryIndex(i)}
+                      className={`group relative rounded-xl overflow-hidden border cursor-pointer transition-all ${
+                        isPrimary
+                          ? 'border-gold-300 ring-2 ring-gold-400/50 shadow-lg shadow-gold-400/20'
+                          : 'border-slate-800 bg-slate-900 opacity-80 hover:opacity-100 hover:border-slate-600'
+                      }`}
+                    >
+                      <img
+                        src={photo.url}
+                        alt={photo.name}
+                        className="w-full h-28 object-cover group-hover:scale-105 transition-transform"
+                      />
+                      {isPrimary && (
+                        <div className="absolute top-1.5 left-1.5 bg-gold-400 text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 z-10">
+                          ⭐ Photo 3D Active
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity p-2 flex flex-col justify-between">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-mono-code text-gold-300">
+                            {isPrimary ? 'Face active' : 'Cliquer pour activer'}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removePhoto(photo.id);
+                            }}
+                            className="p-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <div className="text-[10px] font-mono-code text-slate-200 truncate">
+                          #{i + 1} {photo.name}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Target 3D Category Selector */}
