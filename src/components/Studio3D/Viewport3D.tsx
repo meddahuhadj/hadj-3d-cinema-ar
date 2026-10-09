@@ -610,23 +610,6 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
         wheelMesh.position.set(Math.sin(angle) * 1.05, -0.82, Math.cos(angle) * 1.05);
         mainGroup.add(wheelMesh);
       }
-
-      // Map user photo texture to high backrest cushion if provided
-      if (modelData.userImageUrl) {
-        const texLoader = new THREE.TextureLoader();
-        texLoader.load(modelData.userImageUrl, (tex) => {
-          tex.colorSpace = THREE.SRGBColorSpace;
-          const chairPhotoGeo = new THREE.PlaneGeometry(1.18, 1.48);
-          const chairPhotoMat = new THREE.MeshStandardMaterial({
-            map: tex,
-            roughness: 0.35,
-            metalness: 0.1,
-          });
-          const chairPhotoMesh = new THREE.Mesh(chairPhotoGeo, chairPhotoMat);
-          chairPhotoMesh.position.set(0, 1.0, -0.49);
-          mainGroup.add(chairPhotoMesh);
-        });
-      }
     } else if (type === 'freezer' || type === 'chest_freezer') {
       // Build Congélateur Horizontal Sharbo 150L 3D Assembly (Matching user photo)
       const freezerBodyMat = new THREE.MeshStandardMaterial({
