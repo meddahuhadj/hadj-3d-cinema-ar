@@ -206,7 +206,8 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
     createdAt: '2026-10-08',
     arUrl: 'https://photo2cine3d.app/ar/SHARBO-FREEZER-150L',
     qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://photo2cine3d.app/ar/SHARBO-FREEZER-150L',
-    proceduralType: 'chest_freezer',
+    modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/CommercialRefrigerator/glTF-Binary/CommercialRefrigerator.glb',
+    proceduralType: 'freezer_glb',
     materials: {
       metallic: 0.1,
       roughness: 0.25,
@@ -395,7 +396,8 @@ export const INITIAL_DEMO_MODELS: Model3DData[] = [
     createdAt: '2026-10-06',
     arUrl: 'https://photo2cine3d.app/ar/CAM-RETRO-74',
     qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://photo2cine3d.app/ar/CAM-RETRO-74',
-    proceduralType: 'camera',
+    modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/AntiqueCamera/glTF-Binary/AntiqueCamera.glb',
+    proceduralType: 'camera_glb',
     materials: {
       metallic: 0.85,
       roughness: 0.15,

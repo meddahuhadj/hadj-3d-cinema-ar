@@ -28,8 +28,8 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   const targetCategories = [
     {
       id: 'portrait_bust',
-      title: 'Buste & Portrait 3D Studio (VIP & Pro)',
-      subtitle: 'Portrait Humain / Avatar & Statut 3D',
+      title: 'Portrait Spatial 3D (Relief Cinéma)',
+      subtitle: 'Sculpture Volumétrique IA • Châssis Titane & Or',
       icon: '👤',
       modelPreset: undefined
     },

@@ -81,7 +81,7 @@ export interface Model3DData {
   animation: AnimationSettings;
   modelUrl?: string; // GLB or procedural fallback mesh descriptor
   userImageUrl?: string; // Uploaded user photo for neural depth reconstruction
-  proceduralType?: 'portrait_bust' | 'avatar' | 'sneaker' | 'camera' | 'chair' | 'executive_chair' | 'freezer' | 'chest_freezer' | 'sculpture' | 'drone' | 'cyberhead' | 'car' | 'vehicle' | 'rolls_royce' | 'suv' | 'neural_depth';
+  proceduralType?: 'portrait_bust' | 'avatar' | 'sneaker' | 'camera' | 'chair' | 'executive_chair' | 'freezer' | 'chest_freezer' | 'sculpture' | 'drone' | 'cyberhead' | 'car' | 'vehicle' | 'rolls_royce' | 'suv' | 'neural_depth' | 'avatar_glb' | 'astronaut_glb' | 'freezer_glb' | 'chair_glb' | 'sneaker_glb' | 'camera_glb';
 }
 
 export interface DigitalTwinPassport {

@@ -170,8 +170,10 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
        modelData.modelUrl.startsWith('data:') ||
        (modelData.modelUrl.endsWith('.glb') && !modelData.modelUrl.includes('default.glb'))));
 
+    let mixer: THREE.AnimationMixer | null = null;
+
     if (isRealGlbUrl && modelData.modelUrl) {
-      // 1. Primary Priority: Real 360° Volumetric GLB 3D Model from Tripo / AI API
+      // 1. Primary Priority: Real 360° Volumetric GLB 3D Model from Tripo / AI API / Khronos
       const loader = new GLTFLoader();
       loader.load(
         modelData.modelUrl,
@@ -199,6 +201,12 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
               }
             }
           });
+
+          if (gltf.animations && gltf.animations.length > 0) {
+            mixer = new THREE.AnimationMixer(loadedModel);
+            const action = mixer.clipAction(gltf.animations[0]);
+            action.play();
+          }
 
           mainGroup.add(loadedModel);
         },
@@ -329,140 +337,186 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
         
         if (type === 'portrait_bust' || type === 'avatar' || type === 'sculpture' || type === 'cyberhead') {
           // ==========================================================
-          // BUSTE 3D PORTRAIT & AVATAR STUDIO HAUTE FIDÉLITÉ (VIP / PRO)
+          // PORTRAIT SPATIAL 3D & SCULPTURE HOLOGRAPHIQUE HAUTE FIDÉLITÉ
           // ==========================================================
-          const suitMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(material.colorTint && material.colorTint !== '#ffffff' && material.colorTint !== '#d4af37' ? material.colorTint : '#18243b'),
-            roughness: 0.75,
-            metalness: 0.1,
-            wireframe: viewMode === 'wireframe' || material.wireframe
-          });
-
-          const shirtMat = new THREE.MeshStandardMaterial({
-            color: 0xffffff,
-            roughness: 0.35,
-            metalness: 0.05
-          });
-
-          const tieMat = new THREE.MeshStandardMaterial({
-            color: 0x1d3557,
-            roughness: 0.3,
-            metalness: 0.25
-          });
-
           const marblePedestalMat = new THREE.MeshStandardMaterial({
-            color: 0x181512,
-            roughness: 0.2,
-            metalness: 0.4
+            color: 0x141210,
+            roughness: 0.22,
+            metalness: 0.4,
+            wireframe: viewMode === 'wireframe' || material.wireframe
           });
 
           const goldTrimMat = new THREE.MeshStandardMaterial({
             color: 0xd4af37,
-            roughness: 0.25,
-            metalness: 0.85
+            roughness: 0.2,
+            metalness: 0.9,
+            wireframe: viewMode === 'wireframe' || material.wireframe
           });
 
-          const skinMat = new THREE.MeshStandardMaterial({
-            color: 0xe0c8b0,
-            roughness: 0.55,
-            metalness: 0.05
-          });
-
-          // 1. Socle Piédestal de Musée Contemporain (Base)
-          const baseGeo = new THREE.CylinderGeometry(0.85, 0.95, 0.22, 32);
+          // 1. Socle Piédestal de Musée Contemporain (Base circulaire en marbre noir poli)
+          const baseGeo = new THREE.CylinderGeometry(0.88, 0.98, 0.22, 36);
           const baseMesh = new THREE.Mesh(baseGeo, marblePedestalMat);
           baseMesh.position.set(0, -1.35, 0);
           baseMesh.castShadow = true;
+          baseMesh.receiveShadow = true;
           mainGroup.add(baseMesh);
 
           // Bague Dorée de transition
-          const goldRingGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.06, 32);
+          const goldRingGeo = new THREE.CylinderGeometry(0.72, 0.72, 0.05, 36);
           const goldRing = new THREE.Mesh(goldRingGeo, goldTrimMat);
-          goldRing.position.set(0, -1.21, 0);
+          goldRing.position.set(0, -1.23, 0);
           mainGroup.add(goldRing);
 
           // Colonne Piédestal
-          const stemGeo = new THREE.CylinderGeometry(0.35, 0.42, 0.35, 32);
+          const stemGeo = new THREE.CylinderGeometry(0.42, 0.52, 0.26, 36);
           const stemMesh = new THREE.Mesh(stemGeo, marblePedestalMat);
-          stemMesh.position.set(0, -1.02, 0);
+          stemMesh.position.set(0, -1.07, 0);
           stemMesh.castShadow = true;
           mainGroup.add(stemMesh);
 
           // Plaque Nominative Dorée
-          const plaqueGeo = new THREE.BoxGeometry(0.72, 0.14, 0.04);
+          const plaqueGeo = new THREE.BoxGeometry(0.82, 0.13, 0.04);
           const plaqueMesh = new THREE.Mesh(plaqueGeo, goldTrimMat);
-          plaqueMesh.position.set(0, -1.35, 0.91);
+          plaqueMesh.position.set(0, -1.35, 0.94);
           mainGroup.add(plaqueMesh);
 
-          // 2. Torse en Veste de Costume Bleu Marine (Buste)
-          const torsoGeo = new THREE.BoxGeometry(2.0, 0.85, 0.95);
-          const torsoMesh = new THREE.Mesh(torsoGeo, suitMat);
-          torsoMesh.position.set(0, -0.5, 0);
-          torsoMesh.castShadow = true;
-          mainGroup.add(torsoMesh);
-
-          // Revers de veste gauche et droit (Lapels)
-          [-0.32, 0.32].forEach((xPos, idx) => {
-            const lapelGeo = new THREE.BoxGeometry(0.26, 0.68, 0.08);
-            lapelGeo.rotateZ(idx === 0 ? Math.PI / 16 : -Math.PI / 16);
-            const lapelMesh = new THREE.Mesh(lapelGeo, suitMat);
-            lapelMesh.position.set(xPos, -0.42, 0.51);
-            mainGroup.add(lapelMesh);
-          });
-
-          // Col de chemise blanche
-          const shirtGeo = new THREE.BoxGeometry(0.55, 0.28, 0.15);
-          const shirtMesh = new THREE.Mesh(shirtGeo, shirtMat);
-          shirtMesh.position.set(0, -0.22, 0.46);
-          mainGroup.add(shirtMesh);
-
-          // Cravate bleue
-          const tieGeo = new THREE.BoxGeometry(0.18, 0.62, 0.06);
-          const tieMesh = new THREE.Mesh(tieGeo, tieMat);
-          tieMesh.position.set(0, -0.5, 0.52);
-          mainGroup.add(tieMesh);
-
-          // 3. Cou Anatomique
-          const neckGeo = new THREE.CylinderGeometry(0.28, 0.34, 0.4, 32);
-          const neckMesh = new THREE.Mesh(neckGeo, skinMat);
-          neckMesh.position.set(0, -0.05, 0);
-          neckMesh.castShadow = true;
-          mainGroup.add(neckMesh);
-
-          // 4. Crâne & Tête Anatomique 3D
-          const headGeo = new THREE.SphereGeometry(0.62, 32, 32);
-          headGeo.scale(0.92, 1.15, 1.05);
-          const headMesh = new THREE.Mesh(headGeo, skinMat);
-          headMesh.position.set(0, 0.52, 0);
-          headMesh.castShadow = true;
-          mainGroup.add(headMesh);
-
-          // Menton et Mâchoire
-          const jawGeo = new THREE.BoxGeometry(0.52, 0.32, 0.48);
-          const jawMesh = new THREE.Mesh(jawGeo, skinMat);
-          jawMesh.position.set(0, 0.22, 0.18);
-          mainGroup.add(jawMesh);
-
-          // 5. Masque Facial & Portrait Photo HD en Relief
+          // 2. Monolithe Spatial 3D (Relief Volumétrique Continu)
           const userPhoto = modelData.userImageUrl || modelData.thumbnail;
           if (userPhoto) {
-            const texLoader = new THREE.TextureLoader();
-            texLoader.load(userPhoto, (tex) => {
-              tex.colorSpace = THREE.SRGBColorSpace;
-              const faceGeo = new THREE.PlaneGeometry(1.22, 1.62, 64, 64);
-              const faceMat = new THREE.MeshStandardMaterial({
-                map: tex,
-                roughness: 0.4,
-                metalness: 0.1,
-                bumpMap: tex,
-                bumpScale: 0.04,
+            processNeuralImage(userPhoto).then((neural) => {
+              const aspect = neural.aspectRatio || 0.8;
+              const width = aspect <= 1 ? 2.1 : 2.5;
+              const rawHeight = aspect <= 1 ? 2.1 / aspect : 2.5 / aspect;
+              const height = Math.min(Math.max(rawHeight, 2.2), 2.9);
+              const thickness = 0.36; // 36cm solid relief depth
+              const yCenter = -0.92 + height / 2;
+
+              // Front Face with High-Resolution Curvature and Neural Displacement
+              const frontGeo = new THREE.PlaneGeometry(width, height, 180, 180);
+              const pos = frontGeo.attributes.position;
+              for (let i = 0; i < pos.count; i++) {
+                const x = pos.getX(i);
+                const normX = x / (width / 2);
+                // Subtle cylindrical curve bending backwards at edges for authentic spatial 3D volume
+                const curveZ = -0.10 * (normX * normX);
+                pos.setZ(i, curveZ);
+              }
+              frontGeo.computeVertexNormals();
+
+              const neuralFrontMat = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                map: neural.diffuseTexture,
+                displacementMap: neural.depthTexture,
+                displacementScale: 0.35,
+                displacementBias: -0.02,
+                normalMap: neural.normalTexture,
+                normalScale: new THREE.Vector2(material.normalMapIntensity || 1.3, material.normalMapIntensity || 1.3),
+                roughnessMap: neural.roughnessTexture,
+                metalness: Math.min(0.2, material.metallic),
+                roughness: Math.max(0.28, material.roughness),
+                wireframe: viewMode === 'wireframe' || material.wireframe,
                 side: THREE.FrontSide
               });
-              const faceMesh = new THREE.Mesh(faceGeo, faceMat);
-              faceMesh.position.set(0, 0.35, 0.52);
-              faceMesh.castShadow = true;
-              mainGroup.add(faceMesh);
+              materialRef.current = neuralFrontMat;
+
+              const frontMesh = new THREE.Mesh(frontGeo, neuralFrontMat);
+              frontMesh.position.set(0, yCenter, thickness / 2);
+              frontMesh.castShadow = true;
+              frontMesh.receiveShadow = true;
+              mainGroup.add(frontMesh);
+
+              // Back Face - Solid Brushed Obsidian/Titanium Shell
+              const backGeo = new THREE.PlaneGeometry(width, height, 40, 40);
+              backGeo.rotateY(Math.PI);
+              const bPos = backGeo.attributes.position;
+              for (let i = 0; i < bPos.count; i++) {
+                const x = bPos.getX(i);
+                const normX = x / (width / 2);
+                const curveZ = 0.08 * (normX * normX);
+                bPos.setZ(i, curveZ);
+              }
+              backGeo.computeVertexNormals();
+
+              const backMat = new THREE.MeshStandardMaterial({
+                color: 0x181614,
+                roughness: 0.35,
+                metalness: 0.85,
+                wireframe: viewMode === 'wireframe' || material.wireframe
+              });
+              const backMesh = new THREE.Mesh(backGeo, backMat);
+              backMesh.position.set(0, yCenter, -thickness / 2);
+              backMesh.castShadow = true;
+              mainGroup.add(backMesh);
+
+              // Hermetic Chamfered Casing (Left, Right, Top, Bottom) in Brushed Gold/Titanium
+              const casingMat = goldTrimMat;
+
+              const leftGeo = new THREE.BoxGeometry(0.06, height, thickness);
+              const leftWall = new THREE.Mesh(leftGeo, casingMat);
+              leftWall.position.set(-width / 2, yCenter, 0);
+              leftWall.castShadow = true;
+              mainGroup.add(leftWall);
+
+              const rightGeo = new THREE.BoxGeometry(0.06, height, thickness);
+              const rightWall = new THREE.Mesh(rightGeo, casingMat);
+              rightWall.position.set(width / 2, yCenter, 0);
+              rightWall.castShadow = true;
+              mainGroup.add(rightWall);
+
+              const topGeo = new THREE.BoxGeometry(width + 0.06, 0.06, thickness);
+              const topWall = new THREE.Mesh(topGeo, casingMat);
+              topWall.position.set(0, yCenter + height / 2, 0);
+              topWall.castShadow = true;
+              mainGroup.add(topWall);
+
+              const bottomGeo = new THREE.BoxGeometry(width + 0.06, 0.06, thickness);
+              const bottomWall = new THREE.Mesh(bottomGeo, casingMat);
+              bottomWall.position.set(0, yCenter - height / 2, 0);
+              bottomWall.castShadow = true;
+              mainGroup.add(bottomWall);
+
+              // 4 Smooth Rounded Corner Pillars
+              [
+                [-width / 2, yCenter + height / 2],
+                [width / 2, yCenter + height / 2],
+                [-width / 2, yCenter - height / 2],
+                [width / 2, yCenter - height / 2],
+              ].forEach(([cx, cy]) => {
+                const pillarGeo = new THREE.CylinderGeometry(0.04, 0.04, thickness, 16);
+                pillarGeo.rotateX(Math.PI / 2);
+                const pillar = new THREE.Mesh(pillarGeo, casingMat);
+                pillar.position.set(cx, cy, 0);
+                mainGroup.add(pillar);
+              });
+            }).catch((err) => {
+              console.error('Error creating spatial 3D portrait:', err);
             });
+          } else {
+            // Classical Bronze Museum Sculpture Bust
+            const bronzeMat = new THREE.MeshStandardMaterial({
+              color: 0x8a6c38,
+              roughness: 0.35,
+              metalness: 0.75,
+              wireframe: viewMode === 'wireframe' || material.wireframe
+            });
+            const torsoGeo = new THREE.CylinderGeometry(0.65, 0.45, 1.1, 32);
+            const torsoMesh = new THREE.Mesh(torsoGeo, bronzeMat);
+            torsoMesh.position.set(0, -0.4, 0);
+            torsoMesh.castShadow = true;
+            mainGroup.add(torsoMesh);
+
+            const neckGeo = new THREE.CylinderGeometry(0.24, 0.30, 0.35, 32);
+            const neckMesh = new THREE.Mesh(neckGeo, bronzeMat);
+            neckMesh.position.set(0, 0.25, 0);
+            neckMesh.castShadow = true;
+            mainGroup.add(neckMesh);
+
+            const headGeo = new THREE.SphereGeometry(0.52, 32, 32);
+            headGeo.scale(0.85, 1.15, 0.95);
+            const headMesh = new THREE.Mesh(headGeo, bronzeMat);
+            headMesh.position.set(0, 0.7, 0);
+            headMesh.castShadow = true;
+            mainGroup.add(headMesh);
           }
         } else if (type === 'sneaker') {
       // High-Fidelity Cyberpunk Sneaker 3D Assembly
@@ -904,6 +958,11 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
     const animate = () => {
       const delta = clock.getDelta();
       const elapsedTime = clock.getElapsedTime();
+
+      // Handle Skeletal Animations for GLTF Models (e.g. CesiumMan)
+      if (mixer) {
+        mixer.update(delta);
+      }
 
       // Handle Animation spin & floating
       if (mainGroup) {
