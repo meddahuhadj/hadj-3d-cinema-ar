@@ -284,6 +284,28 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
               <span>cam: <strong className="text-gold-300 font-mono-code">{camera.focalLength}mm</strong></span>
             </div>
 
+            {/* In-Viewport 3D Mesh Quick Switcher Dock */}
+            <div className="absolute bottom-5 right-6 z-20 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md p-1.5 rounded-2xl border border-gold-400/30 shadow-2xl overflow-x-auto max-w-[calc(100%-250px)] scrollbar-none">
+              {templateOptions.map(opt => {
+                const isSelected = currentTemplateId === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => handleSelectTemplate(opt)}
+                    className={`px-2.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-gold-300 to-gold-500 text-[#141008] shadow-md shadow-gold-400/20 scale-[1.03]'
+                        : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:text-white'
+                    }`}
+                    title={`Activer : ${opt.label}`}
+                  >
+                    <span>{opt.icon}</span>
+                    <span>{opt.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
           </div>
         </div>
 

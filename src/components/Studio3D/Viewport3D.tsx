@@ -391,26 +391,17 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
               const thickness = 0.36; // 36cm solid relief depth
               const yCenter = -0.92 + height / 2;
 
-              // Front Face with High-Resolution Curvature and Neural Displacement
-              const frontGeo = new THREE.PlaneGeometry(width, height, 180, 180);
-              const pos = frontGeo.attributes.position;
-              for (let i = 0; i < pos.count; i++) {
-                const x = pos.getX(i);
-                const normX = x / (width / 2);
-                // Subtle cylindrical curve bending backwards at edges for authentic spatial 3D volume
-                const curveZ = -0.10 * (normX * normX);
-                pos.setZ(i, curveZ);
-              }
-              frontGeo.computeVertexNormals();
+              // Front Face with High-Resolution Neural Displacement (Pure forward Z-axis displacement, ZERO lateral tilt)
+              const frontGeo = new THREE.PlaneGeometry(width, height, 160, 160);
 
               const neuralFrontMat = new THREE.MeshStandardMaterial({
                 color: 0xffffff,
                 map: neural.diffuseTexture,
                 displacementMap: neural.depthTexture,
-                displacementScale: 0.16,
+                displacementScale: 0.12,
                 displacementBias: 0.0,
                 normalMap: neural.normalTexture,
-                normalScale: new THREE.Vector2(material.normalMapIntensity || 1.2, material.normalMapIntensity || 1.2),
+                normalScale: new THREE.Vector2(material.normalMapIntensity || 1.1, material.normalMapIntensity || 1.1),
                 roughnessMap: neural.roughnessTexture,
                 metalness: Math.min(0.2, material.metallic),
                 roughness: Math.max(0.28, material.roughness),
@@ -420,27 +411,19 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
               materialRef.current = neuralFrontMat;
 
               const frontMesh = new THREE.Mesh(frontGeo, neuralFrontMat);
-              frontMesh.position.set(0, yCenter, thickness / 2 - 0.02);
+              frontMesh.position.set(0, yCenter, thickness / 2 - 0.04);
               frontMesh.castShadow = true;
               frontMesh.receiveShadow = true;
               mainGroup.add(frontMesh);
 
-              // Back Face - Solid Brushed Obsidian/Titanium Shell
-              const backGeo = new THREE.PlaneGeometry(width, height, 40, 40);
+              // Back Face - Solid Brushed Obsidian/Titanium Luxury Engineering Backplate
+              const backGeo = new THREE.PlaneGeometry(width, height, 32, 32);
               backGeo.rotateY(Math.PI);
-              const bPos = backGeo.attributes.position;
-              for (let i = 0; i < bPos.count; i++) {
-                const x = bPos.getX(i);
-                const normX = x / (width / 2);
-                const curveZ = 0.08 * (normX * normX);
-                bPos.setZ(i, curveZ);
-              }
-              backGeo.computeVertexNormals();
 
               const backMat = new THREE.MeshStandardMaterial({
-                color: 0x181614,
-                roughness: 0.35,
-                metalness: 0.85,
+                color: 0x1c1a17,
+                roughness: 0.3,
+                metalness: 0.88,
                 wireframe: viewMode === 'wireframe' || material.wireframe
               });
               const backMesh = new THREE.Mesh(backGeo, backMat);
@@ -448,60 +431,87 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
               backMesh.castShadow = true;
               mainGroup.add(backMesh);
 
+              // Backplate Luxury Detailing: Hologram Optical Lens Core & Titanium Fins
+              const coreRingGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.03, 32);
+              coreRingGeo.rotateX(Math.PI / 2);
+              const coreRing = new THREE.Mesh(coreRingGeo, goldTrimMat);
+              coreRing.position.set(0, yCenter, -thickness / 2 - 0.02);
+              mainGroup.add(coreRing);
+
+              const glassCoreGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.04, 32);
+              glassCoreGeo.rotateX(Math.PI / 2);
+              const glassCore = new THREE.Mesh(glassCoreGeo, new THREE.MeshStandardMaterial({ color: 0x0a192f, roughness: 0.1, metalness: 0.9 }));
+              glassCore.position.set(0, yCenter, -thickness / 2 - 0.02);
+              mainGroup.add(glassCore);
+
+              // Backplate Engraved Golden Badge
+              const badgeGeo = new THREE.BoxGeometry(0.85, 0.14, 0.03);
+              const badgeMesh = new THREE.Mesh(badgeGeo, goldTrimMat);
+              badgeMesh.position.set(0, yCenter - 0.65, -thickness / 2 - 0.02);
+              mainGroup.add(badgeMesh);
+
+              // Horizontal Titanium Cooling Ribs
+              [-0.38, -0.18, 0.18, 0.38].forEach((offsetY) => {
+                const ribGeo = new THREE.BoxGeometry(width * 0.75, 0.02, 0.02);
+                const ribMesh = new THREE.Mesh(ribGeo, goldTrimMat);
+                ribMesh.position.set(0, yCenter + offsetY, -thickness / 2 - 0.015);
+                mainGroup.add(ribMesh);
+              });
+
               // Outer Casing Walls (enclosing all sides completely with ample depth)
               const casingMat = goldTrimMat;
-              const frameDepth = thickness + 0.10;
+              const frameDepth = thickness + 0.16;
 
               const leftGeo = new THREE.BoxGeometry(0.08, height + 0.08, frameDepth);
               const leftWall = new THREE.Mesh(leftGeo, casingMat);
-              leftWall.position.set(-width / 2 - 0.02, yCenter, 0.01);
+              leftWall.position.set(-width / 2 - 0.03, yCenter, 0.01);
               leftWall.castShadow = true;
               mainGroup.add(leftWall);
 
               const rightGeo = new THREE.BoxGeometry(0.08, height + 0.08, frameDepth);
               const rightWall = new THREE.Mesh(rightGeo, casingMat);
-              rightWall.position.set(width / 2 + 0.02, yCenter, 0.01);
+              rightWall.position.set(width / 2 + 0.03, yCenter, 0.01);
               rightWall.castShadow = true;
               mainGroup.add(rightWall);
 
-              const topGeo = new THREE.BoxGeometry(width + 0.12, 0.08, frameDepth);
+              const topGeo = new THREE.BoxGeometry(width + 0.14, 0.08, frameDepth);
               const topWall = new THREE.Mesh(topGeo, casingMat);
-              topWall.position.set(0, yCenter + height / 2 + 0.02, 0.01);
+              topWall.position.set(0, yCenter + height / 2 + 0.03, 0.01);
               topWall.castShadow = true;
               mainGroup.add(topWall);
 
-              const bottomGeo = new THREE.BoxGeometry(width + 0.12, 0.08, frameDepth);
+              const bottomGeo = new THREE.BoxGeometry(width + 0.14, 0.08, frameDepth);
               const bottomWall = new THREE.Mesh(bottomGeo, casingMat);
-              bottomWall.position.set(0, yCenter - height / 2 - 0.02, 0.01);
+              bottomWall.position.set(0, yCenter - height / 2 - 0.03, 0.01);
               bottomWall.castShadow = true;
               mainGroup.add(bottomWall);
 
               // Front Bezel Lip (Cadre passe-partout de luxe) - frames the image edges seamlessly
-              const bezelLipThickness = 0.03;
-              const frontLipZ = thickness / 2 + 0.05;
+              const bezelLipThickness = 0.04;
+              const frontLipZ = thickness / 2 + 0.075;
 
               // Left Front Lip
-              const leftLipGeo = new THREE.BoxGeometry(0.08, height + 0.08, bezelLipThickness);
+              const leftLipGeo = new THREE.BoxGeometry(0.10, height + 0.10, bezelLipThickness);
               const leftLip = new THREE.Mesh(leftLipGeo, casingMat);
-              leftLip.position.set(-width / 2 - 0.01, yCenter, frontLipZ);
+              leftLip.position.set(-width / 2, yCenter, frontLipZ);
               mainGroup.add(leftLip);
 
               // Right Front Lip
-              const rightLipGeo = new THREE.BoxGeometry(0.08, height + 0.08, bezelLipThickness);
+              const rightLipGeo = new THREE.BoxGeometry(0.10, height + 0.10, bezelLipThickness);
               const rightLip = new THREE.Mesh(rightLipGeo, casingMat);
-              rightLip.position.set(width / 2 + 0.01, yCenter, frontLipZ);
+              rightLip.position.set(width / 2, yCenter, frontLipZ);
               mainGroup.add(rightLip);
 
               // Top Front Lip
-              const topLipGeo = new THREE.BoxGeometry(width + 0.10, 0.08, bezelLipThickness);
+              const topLipGeo = new THREE.BoxGeometry(width + 0.10, 0.10, bezelLipThickness);
               const topLip = new THREE.Mesh(topLipGeo, casingMat);
-              topLip.position.set(0, yCenter + height / 2 + 0.01, frontLipZ);
+              topLip.position.set(0, yCenter + height / 2, frontLipZ);
               mainGroup.add(topLip);
 
               // Bottom Front Lip
-              const bottomLipGeo = new THREE.BoxGeometry(width + 0.10, 0.08, bezelLipThickness);
+              const bottomLipGeo = new THREE.BoxGeometry(width + 0.10, 0.10, bezelLipThickness);
               const bottomLip = new THREE.Mesh(bottomLipGeo, casingMat);
-              bottomLip.position.set(0, yCenter - height / 2 - 0.01, frontLipZ);
+              bottomLip.position.set(0, yCenter - height / 2, frontLipZ);
               mainGroup.add(bottomLip);
 
               // Solid Pedestal Support Bracket (Scelle l'espace entre le bas du monolithe et le socle)
