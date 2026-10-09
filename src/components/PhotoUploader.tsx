@@ -67,6 +67,13 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       subtitle: 'Industriel & Aéronautique',
       icon: '🚁',
       modelPreset: INITIAL_DEMO_MODELS[5]
+    },
+    {
+      id: 'neural_depth',
+      title: 'Volume 3D Intégral IA (Solide Chamfreiné)',
+      subtitle: 'Reconstruction Volumétrique Ouverte 360°',
+      icon: '💎',
+      modelPreset: undefined
     }
   ];
 
@@ -163,22 +170,27 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 
     const activePhotoUrl = activePhoto ? activePhoto.url : 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80';
 
+    const activeCatId = selectedCategoryId || 'chest_freezer';
+    const targetCat = targetCategories.find(c => c.id === activeCatId);
+    const chosenModelUrl = targetCat?.modelPreset?.modelUrl;
+
     const generatedModel: Model3DData = {
       id: `recon-${Date.now()}`,
-      title: cleanTitle,
-      category: 'product',
+      title: (cleanTitle && cleanTitle.toLowerCase() !== 'deposit' && cleanTitle !== 'Objet / Produit 3D Reconstruit') ? cleanTitle : (targetCat?.title || cleanTitle),
+      category: (activeCatId === 'rolls_royce' ? 'vehicle' : (activeCatId === 'camera' || activeCatId === 'drone' ? 'object' : 'product')) as any,
       thumbnail: activePhotoUrl,
       userImageUrl: activePhotoUrl,
       photoCount: photos.length || 1,
-      polygonCount: 84000,
+      polygonCount: activeCatId === 'rolls_royce' ? 168000 : activeCatId === 'chest_freezer' ? 98000 : 84000,
       optimizedPolyCount: 32000,
       originalSizeMB: 18.5,
       optimizedSizeMB: 3.4,
       createdAt: new Date().toISOString().split('T')[0],
       arUrl: `https://photo2cine3d.app/ar/recon-${Date.now()}`,
       qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://photo2cine3d.app/ar/recon-${Date.now()}`,
-      proceduralType: 'neural_depth',
-      materials: {
+      modelUrl: chosenModelUrl,
+      proceduralType: activeCatId as any,
+      materials: targetCat?.modelPreset?.materials || {
         metallic: 0.35,
         roughness: 0.45,
         normalMapIntensity: 1.6,
@@ -481,10 +493,18 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 
               {/* Target 3D Category Selector */}
               <div className="pt-4 border-t border-slate-800 space-y-2">
-                <label className="text-xs font-bold text-slate-200 flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-gold-300" />
-                  <span>Gabarit & Reconnaissance d'Objet IA (Fidélité 3D) :</span>
-                </label>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <label className="text-xs font-bold text-white flex items-center gap-2">
+                    <Cpu className="w-4 h-4 text-gold-300" />
+                    <span>Gabarit 3D Volumétrique 360° (Modèle Réel Tout Angle) :</span>
+                  </label>
+                  <span className="text-[10px] text-amber-300 font-medium">
+                    ✦ Maillage 3D complet avec côtés & profondeur
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Choisissez la géométrie cible pour votre photo : votre objet sera modélisé en vrai volume 3D à 360° (plus d'effet plat).
+                </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {targetCategories.map(cat => (
                     <button

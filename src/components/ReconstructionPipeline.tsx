@@ -238,6 +238,14 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
 
           const userPhotoUrl = activePhoto ? activePhoto.url : (activeModel?.userImageUrl || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600');
 
+          const chosenProcedural = activeModel?.proceduralType || 
+            (fileName.includes('rolls') || fileName.includes('cullinan') || fileName.includes('car') || fileName.includes('suv') ? 'rolls_royce' :
+             fileName.includes('chaise') || fileName.includes('chair') || fileName.includes('fauteuil') ? 'executive_chair' :
+             fileName.includes('congelateur') || fileName.includes('freezer') || fileName.includes('sharbo') ? 'chest_freezer' :
+             fileName.includes('shoe') || fileName.includes('sneaker') || fileName.includes('basket') ? 'sneaker' :
+             fileName.includes('camera') || fileName.includes('photo') ? 'camera' :
+             fileName.includes('drone') ? 'drone' : 'chest_freezer');
+
           const fallbackModel: Model3DData = {
             id: 'cine-' + Date.now(),
             title: modelTitle,
@@ -252,16 +260,17 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
             createdAt: new Date().toISOString().split('T')[0],
             arUrl: `https://photo2cine3d.app/ar/model-${Date.now()}`,
             qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://photo2cine3d.app/ar/model-${Date.now()}`,
-            proceduralType: 'neural_depth',
-            materials: {
-              metallic: 0.9,
-              roughness: 0.15,
+            modelUrl: activeModel?.modelUrl,
+            proceduralType: chosenProcedural as any,
+            materials: activeModel?.materials || {
+              metallic: 0.35,
+              roughness: 0.35,
               normalMapIntensity: 1.2,
               brightness: 1.0,
               contrast: 1.1,
               saturation: 1.0,
               ambientOcclusion: 0.85,
-              preset: 'Cinematic Metal',
+              preset: 'Product',
               wireframe: false,
               textureEnhanceAI: true,
               colorTint: colorTint

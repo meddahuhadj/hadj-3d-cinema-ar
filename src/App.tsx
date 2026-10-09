@@ -113,13 +113,14 @@ export function App() {
 
         {activeTab === 'studio' && (
           <Studio3DMain
-            key={`${activeModel.id}-${activeModel.userImageUrl || ''}`}
+            key={`${activeModel.id}-${activeModel.proceduralType || ''}-${activeModel.modelUrl || ''}-${activeModel.userImageUrl || ''}`}
             modelData={activeModel}
             onOpenAR={() => setActiveTab('webar')}
             onOpenExport={() => setIsExportOpen(true)}
             onOpenAIAssistant={() => setIsAIAssistantOpen(true)}
             onOpenOptimizer={() => setIsOptimizerOpen(true)}
             onChangePhoto={handleStartUpload}
+            onUpdateModel={(updated) => setActiveModel(updated)}
           />
         )}
 

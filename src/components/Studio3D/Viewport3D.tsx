@@ -220,72 +220,105 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
           const aspect = neural.aspectRatio || 1.33;
           const baseWidth = aspect >= 1 ? 3.0 : 3.0 * aspect;
           const baseHeight = aspect >= 1 ? 3.0 / aspect : 3.0;
+          const volumetricDepth = 0.85; // True 3D Volumetric Depth (85cm solid volume)
 
           // 1. Front 3D Relief Mesh with True Photo PBR Texture & Neural Displacement
-          const frontGeo = new THREE.PlaneGeometry(baseWidth, baseHeight, 220, 220);
+          const frontGeo = new THREE.PlaneGeometry(baseWidth, baseHeight, 180, 180);
           const neuralFrontMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(0xffffff), // Pure white so photo texture colors are 100% vibrant & bright
             map: neural.diffuseTexture,
             displacementMap: neural.depthTexture,
-            displacementScale: 0.52,
-            displacementBias: -0.05,
+            displacementScale: 0.38,
+            displacementBias: -0.04,
             normalMap: neural.normalTexture,
             normalScale: new THREE.Vector2(material.normalMapIntensity || 1.2, material.normalMapIntensity || 1.2),
             roughnessMap: neural.roughnessTexture,
             metalness: Math.min(0.2, material.metallic),
             roughness: Math.max(0.25, material.roughness),
-            transparent: true,
-            alphaTest: 0.05,
             wireframe: viewMode === 'wireframe' || material.wireframe,
             side: THREE.FrontSide
           });
           materialRef.current = neuralFrontMat;
 
           const frontMesh = new THREE.Mesh(frontGeo, neuralFrontMat);
-          frontMesh.position.set(0, 0, 0.08);
+          frontMesh.position.set(0, 0, volumetricDepth / 2);
           frontMesh.castShadow = true;
           frontMesh.receiveShadow = true;
           mainGroup.add(frontMesh);
 
-          // 2. Back Organic Hull with Inverse Displacement for true 360° Volumetric Feel
-          const backGeo = new THREE.PlaneGeometry(baseWidth, baseHeight, 220, 220);
+          // 2. Back Volumetric Hull with Inverse Organic Displacement
+          const backGeo = new THREE.PlaneGeometry(baseWidth, baseHeight, 180, 180);
           backGeo.rotateY(Math.PI);
           const neuralBackMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(0xffffff), // Pure white
+            color: new THREE.Color(0xf4f0e6),
             map: neural.diffuseTexture,
             displacementMap: neural.depthTexture,
-            displacementScale: 0.40,
-            displacementBias: -0.04,
+            displacementScale: 0.28,
+            displacementBias: -0.03,
             normalMap: neural.normalTexture,
-            normalScale: new THREE.Vector2(material.normalMapIntensity || 1.2, material.normalMapIntensity || 1.2),
+            normalScale: new THREE.Vector2(material.normalMapIntensity || 1.0, material.normalMapIntensity || 1.0),
             roughnessMap: neural.roughnessTexture,
             metalness: Math.min(0.2, material.metallic),
-            roughness: Math.max(0.3, material.roughness),
-            transparent: true,
-            alphaTest: 0.05,
+            roughness: Math.max(0.35, material.roughness),
             wireframe: viewMode === 'wireframe' || material.wireframe,
             side: THREE.FrontSide
           });
 
           const backMesh = new THREE.Mesh(backGeo, neuralBackMat);
-          backMesh.position.set(0, 0, -0.08);
+          backMesh.position.set(0, 0, -volumetricDepth / 2);
           backMesh.castShadow = true;
           backMesh.receiveShadow = true;
           mainGroup.add(backMesh);
 
-          // 3. Volumetric Rim Ring / Beveled Rim Contour - Satin Gold/Bronze finish, never pitch black!
-          const rimThickness = 0.16;
-          const rimGeo = new THREE.BoxGeometry(baseWidth * 0.98, baseHeight * 0.98, rimThickness);
-          const rimMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(0xd4af37),
-            metalness: 0.65,
-            roughness: 0.35,
+          // 3. Continuous 3D Solid Casing (Chamfered Beveled Frame - seals all 4 sides with no gap)
+          const casingMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(0x28231a),
+            metalness: 0.75,
+            roughness: 0.25,
             wireframe: viewMode === 'wireframe' || material.wireframe,
           });
-          const rimMesh = new THREE.Mesh(rimGeo, rimMat);
-          rimMesh.position.set(0, 0, 0);
-          rimMesh.castShadow = true;
-          mainGroup.add(rimMesh);
+
+          // Left Wall
+          const leftWallGeo = new THREE.BoxGeometry(0.05, baseHeight, volumetricDepth);
+          const leftWall = new THREE.Mesh(leftWallGeo, casingMat);
+          leftWall.position.set(-baseWidth / 2, 0, 0);
+          leftWall.castShadow = true;
+          mainGroup.add(leftWall);
+
+          // Right Wall
+          const rightWallGeo = new THREE.BoxGeometry(0.05, baseHeight, volumetricDepth);
+          const rightWall = new THREE.Mesh(rightWallGeo, casingMat);
+          rightWall.position.set(baseWidth / 2, 0, 0);
+          rightWall.castShadow = true;
+          mainGroup.add(rightWall);
+
+          // Top Wall
+          const topWallGeo = new THREE.BoxGeometry(baseWidth, 0.05, volumetricDepth);
+          const topWall = new THREE.Mesh(topWallGeo, casingMat);
+          topWall.position.set(0, baseHeight / 2, 0);
+          topWall.castShadow = true;
+          mainGroup.add(topWall);
+
+          // Bottom Wall
+          const bottomWallGeo = new THREE.BoxGeometry(baseWidth, 0.05, volumetricDepth);
+          const bottomWall = new THREE.Mesh(bottomWallGeo, casingMat);
+          bottomWall.position.set(0, -baseHeight / 2, 0);
+          bottomWall.castShadow = true;
+          mainGroup.add(bottomWall);
+
+          // 4 Rounded Corner Trim Pillars
+          [
+            [-baseWidth / 2, baseHeight / 2],
+            [baseWidth / 2, baseHeight / 2],
+            [-baseWidth / 2, -baseHeight / 2],
+            [baseWidth / 2, -baseHeight / 2],
+          ].forEach(([cx, cy]) => {
+            const pillarGeo = new THREE.CylinderGeometry(0.06, 0.06, volumetricDepth, 16);
+            pillarGeo.rotateX(Math.PI / 2);
+            const pillar = new THREE.Mesh(pillarGeo, casingMat);
+            pillar.position.set(cx, cy, 0);
+            mainGroup.add(pillar);
+          });
 
         }).catch(err => {
           console.error('Error creating neural depth 3D model:', err);
@@ -440,6 +473,23 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
         wheelMesh.position.set(Math.sin(angle) * 1.05, -0.82, Math.cos(angle) * 1.05);
         mainGroup.add(wheelMesh);
       }
+
+      // Map user photo texture to high backrest cushion if provided
+      if (modelData.userImageUrl) {
+        const texLoader = new THREE.TextureLoader();
+        texLoader.load(modelData.userImageUrl, (tex) => {
+          tex.colorSpace = THREE.SRGBColorSpace;
+          const chairPhotoGeo = new THREE.PlaneGeometry(1.18, 1.48);
+          const chairPhotoMat = new THREE.MeshStandardMaterial({
+            map: tex,
+            roughness: 0.35,
+            metalness: 0.1,
+          });
+          const chairPhotoMesh = new THREE.Mesh(chairPhotoGeo, chairPhotoMat);
+          chairPhotoMesh.position.set(0, 1.0, -0.49);
+          mainGroup.add(chairPhotoMesh);
+        });
+      }
     } else if (type === 'freezer' || type === 'chest_freezer') {
       // Build Congélateur Horizontal Sharbo 150L 3D Assembly (Matching user photo)
       const freezerBodyMat = new THREE.MeshStandardMaterial({
@@ -500,6 +550,23 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
       const panelMesh = new THREE.Mesh(panelGeo, panelMat);
       panelMesh.position.set(0.4, 0.1, 0.66);
       mainGroup.add(panelMesh);
+
+      // User photo texture mapped to the front of the freezer
+      if (modelData.userImageUrl) {
+        const texLoader = new THREE.TextureLoader();
+        texLoader.load(modelData.userImageUrl, (tex) => {
+          tex.colorSpace = THREE.SRGBColorSpace;
+          const photoDecalGeo = new THREE.PlaneGeometry(1.5, 0.9);
+          const photoDecalMat = new THREE.MeshStandardMaterial({
+            map: tex,
+            roughness: 0.25,
+            metalness: 0.1,
+          });
+          const photoDecal = new THREE.Mesh(photoDecalGeo, photoDecalMat);
+          photoDecal.position.set(-0.25, 0.05, 0.655);
+          mainGroup.add(photoDecal);
+        });
+      }
 
       // 6. Bottom Rubber Corner Feet (Pieds de soutien)
       [[-1.05, 1.05], [1.05, 1.05], [-1.05, -1.05], [1.05, -1.05]].forEach(pos => {

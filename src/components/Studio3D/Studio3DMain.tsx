@@ -16,6 +16,7 @@ interface Studio3DMainProps {
   onOpenAIAssistant: () => void;
   onOpenOptimizer: () => void;
   onChangePhoto?: () => void;
+  onUpdateModel?: (updated: Model3DData) => void;
 }
 
 export const Studio3DMain: React.FC<Studio3DMainProps> = ({
@@ -25,6 +26,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
   onOpenAIAssistant,
   onOpenOptimizer,
   onChangePhoto,
+  onUpdateModel,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'materials' | 'lighting' | 'camera' | 'animation'>('materials');
   const [viewMode, setViewMode] = useState<'rendered' | 'wireframe' | 'solid'>('rendered');
@@ -39,13 +41,47 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
   const [camera, setCamera] = useState<CameraSettings>(modelData.camera);
   const [animation, setAnimation] = useState<AnimationSettings>(modelData.animation);
 
+  const templateOptions = [
+    { id: 'chest_freezer', label: 'Congélateur 150L', icon: '🧊', proceduralType: 'chest_freezer', modelUrl: undefined, polyCount: 98000 },
+    { id: 'executive_chair', label: 'Fauteuil Cuir', icon: '💺', proceduralType: 'executive_chair', modelUrl: undefined, polyCount: 125000 },
+    { id: 'rolls_royce', label: 'Rolls-Royce SUV', icon: '🚗', proceduralType: 'rolls_royce', modelUrl: undefined, polyCount: 168000 },
+    { id: 'sneaker', label: 'Sneaker PBR', icon: '👟', proceduralType: 'sneaker', modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/MaterialsVariantsShoe/glTF-Binary/MaterialsVariantsShoe.glb', polyCount: 84000 },
+    { id: 'camera', label: 'Caméra Studio', icon: '📷', proceduralType: 'camera', modelUrl: undefined, polyCount: 76000 },
+    { id: 'drone', label: 'Drone X-9', icon: '🚁', proceduralType: 'drone', modelUrl: undefined, polyCount: 112000 },
+    { id: 'neural_depth', label: 'Volume 3D Réel (IA)', icon: '💎', proceduralType: 'neural_depth', modelUrl: undefined, polyCount: 84000 },
+  ];
+
+  const currentTemplateId = templateOptions.find(opt => {
+    if (opt.modelUrl && modelData.modelUrl === opt.modelUrl) return true;
+    if (!modelData.modelUrl && opt.proceduralType === modelData.proceduralType) return true;
+    return false;
+  })?.id || (modelData.proceduralType === 'freezer' ? 'chest_freezer' : modelData.proceduralType === 'chair' ? 'executive_chair' : modelData.proceduralType === 'car' ? 'rolls_royce' : 'neural_depth');
+
+  const handleSelectTemplate = (opt: typeof templateOptions[0]) => {
+    if (onUpdateModel) {
+      const isDefaultTitle = modelData.title.toLowerCase().includes('recon') || 
+                             modelData.title.toLowerCase().includes('modèle') || 
+                             modelData.title.toLowerCase().includes('deposit') ||
+                             modelData.title.toLowerCase().includes('produit');
+      const updated: Model3DData = {
+        ...modelData,
+        title: isDefaultTitle ? opt.label : modelData.title,
+        proceduralType: opt.proceduralType as any,
+        modelUrl: opt.modelUrl,
+        polygonCount: opt.polyCount,
+        category: (opt.proceduralType === 'rolls_royce' ? 'vehicle' : opt.proceduralType === 'executive_chair' ? 'furniture' : opt.proceduralType === 'camera' || opt.proceduralType === 'drone' ? 'object' : 'product') as any
+      };
+      onUpdateModel(updated);
+    }
+  };
+
   // Synchronize state immediately when a new model or photo is selected
   useEffect(() => {
     setMaterial(modelData.materials);
     setLighting(modelData.lighting);
     setCamera(modelData.camera);
     setAnimation(modelData.animation);
-  }, [modelData.id, modelData.userImageUrl, modelData.thumbnail]);
+  }, [modelData.id, modelData.proceduralType, modelData.modelUrl, modelData.userImageUrl, modelData.thumbnail]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -120,6 +156,47 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
 
       </div>
 
+      {/* 3D Volumetric Mesh & Template Switcher Bar */}
+      <div className="glass-panel rounded-2xl p-3 sm:p-3.5 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-slate-950/70">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-gold-500/20 border border-gold-400/40 flex items-center justify-center">
+            <Box className="w-4 h-4 text-gold-300" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-white">Gabarit 3D Volumétrique 360° :</span>
+              <span className="text-[10px] font-mono-code px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
+                Châssis 3D Réel
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 hidden sm:block">
+              Basculez de géométrie 3D pour afficher un véritable solide complet (côtés, dos et profondeur).
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-thin">
+          {templateOptions.map(opt => {
+            const isSelected = currentTemplateId === opt.id;
+            return (
+              <button
+                key={opt.id}
+                onClick={() => handleSelectTemplate(opt)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-gradient-to-r from-gold-300 to-gold-500 text-[#141008] shadow-md shadow-gold-400/20 scale-[1.02]'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:text-white hover:border-slate-700'
+                }`}
+                title={`Activer le maillage 3D : ${opt.label}`}
+              >
+                <span>{opt.icon}</span>
+                <span>{opt.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Main Studio Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
@@ -187,7 +264,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
             </div>
 
             <Viewport3D
-              key={`${modelData.id}-${modelData.userImageUrl || ''}`}
+              key={`${modelData.id}-${modelData.proceduralType || ''}-${modelData.modelUrl || ''}-${modelData.userImageUrl || ''}`}
               modelData={modelData}
               material={material}
               lighting={lighting}
