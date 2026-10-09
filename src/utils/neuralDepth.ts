@@ -93,8 +93,14 @@ export const processNeuralImage = (imageUrl: string): Promise<NeuralTextures> =>
 
         let detectedSubjectPixels = 0;
 
-        // First pass: Segment subject and compute initial depth
+        // First pass: Compute initial depth with smooth perimeter edge feathering
+        const marginX = Math.max(12, Math.floor(width * 0.05));
+        const marginY = Math.max(12, Math.floor(height * 0.05));
+
         for (let y = 0; y < height; y++) {
+          const edgeY = Math.min(y / marginY, (height - 1 - y) / marginY, 1.0);
+          const smoothEdgeY = edgeY * edgeY * (3 - 2 * edgeY);
+
           for (let x = 0; x < width; x++) {
             const idx = (y * width + x) * 4;
             const r = data[idx];
@@ -114,30 +120,76 @@ export const processNeuralImage = (imageUrl: string): Promise<NeuralTextures> =>
             const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
             let depth = 0;
-            let alpha = 255;
-
             if (isDifferentFromBg && a > 30) {
               detectedSubjectPixels++;
-              // High-fidelity depth calculation
-              depth = 0.25 + centralBias * 0.45 + (1.0 - Math.abs(lum - 0.5) * 1.2) * 0.3;
-              depth = Math.min(Math.max(depth, 0.05), 1.0);
-              alpha = a;
+              depth = 0.20 + centralBias * 0.35 + (1.0 - Math.abs(lum - 0.5) * 1.2) * 0.25;
+              depth = Math.min(Math.max(depth, 0.05), 0.95);
             } else {
-              // Smooth background depth
-              depth = Math.max(0.02, centralBias * 0.12);
-              alpha = a;
+              depth = Math.max(0.02, centralBias * 0.08);
             }
 
-            grayBuffer[y * width + x] = depth;
+            // Perimeter taper: All 4 outer edges are guaranteed to be 100% flush at 0.0 depth
+            const edgeX = Math.min(x / marginX, (width - 1 - x) / marginX, 1.0);
+            const smoothEdgeX = edgeX * edgeX * (3 - 2 * edgeX);
+            const edgeMult = smoothEdgeX * smoothEdgeY;
 
-            const byteDepth = Math.floor(depth * 255);
+            grayBuffer[y * width + x] = depth * edgeMult;
+          }
+        }
+
+        // Multi-pass Separable Box/Gaussian Blur to eliminate high-frequency spikes and noise
+        const blurRadius = Math.max(3, Math.floor(width / 130)); // ~4 to 7 pixels
+        const tempBuffer = new Float32Array(width * height);
+        const smoothBuffer = new Float32Array(width * height);
+
+        // Horizontal blur pass
+        for (let y = 0; y < height; y++) {
+          const rowOffset = y * width;
+          for (let x = 0; x < width; x++) {
+            let sum = 0;
+            let count = 0;
+            const start = Math.max(0, x - blurRadius);
+            const end = Math.min(width - 1, x + blurRadius);
+            for (let k = start; k <= end; k++) {
+              sum += grayBuffer[rowOffset + k];
+              count++;
+            }
+            tempBuffer[rowOffset + x] = sum / count;
+          }
+        }
+
+        // Vertical blur pass
+        for (let x = 0; x < width; x++) {
+          for (let y = 0; y < height; y++) {
+            let sum = 0;
+            let count = 0;
+            const start = Math.max(0, y - blurRadius);
+            const end = Math.min(height - 1, y + blurRadius);
+            for (let k = start; k <= end; k++) {
+              sum += tempBuffer[k * width + x];
+              count++;
+            }
+            smoothBuffer[y * width + x] = sum / count;
+          }
+        }
+
+        // Write smoothed depth to canvases
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const idx = (y * width + x) * 4;
+            const depthVal = smoothBuffer[y * width + x];
+            const byteDepth = Math.floor(Math.min(1.0, Math.max(0.0, depthVal)) * 255);
+
             depthData[idx] = byteDepth;
             depthData[idx + 1] = byteDepth;
             depthData[idx + 2] = byteDepth;
             depthData[idx + 3] = 255;
 
-            // Roughness: Shiny highlights vs diffuse textures
-            const roughness = Math.floor((1.0 - (depth * 0.4 + lum * 0.4)) * 255);
+            const r = data[idx];
+            const g = data[idx + 1];
+            const b = data[idx + 2];
+            const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            const roughness = Math.floor((1.0 - (depthVal * 0.35 + lum * 0.45)) * 255);
             roughData[idx] = roughness;
             roughData[idx + 1] = roughness;
             roughData[idx + 2] = roughness;
@@ -146,7 +198,7 @@ export const processNeuralImage = (imageUrl: string): Promise<NeuralTextures> =>
             alphaData[idx] = r;
             alphaData[idx + 1] = g;
             alphaData[idx + 2] = b;
-            alphaData[idx + 3] = alpha;
+            alphaData[idx + 3] = 255;
           }
         }
 
@@ -154,19 +206,19 @@ export const processNeuralImage = (imageUrl: string): Promise<NeuralTextures> =>
         roughCtx.putImageData(roughImgData, 0, 0);
         alphaCtx.putImageData(alphaImgData, 0, 0);
 
-        // Second pass: Compute Sobel Normal Map from Depth Buffer
+        // Second pass: Compute Sobel Normal Map from Smoothed Depth Buffer
         for (let y = 1; y < height - 1; y++) {
           for (let x = 1; x < width - 1; x++) {
             const idx = (y * width + x) * 4;
 
-            const dTL = grayBuffer[(y - 1) * width + (x - 1)];
-            const dTC = grayBuffer[(y - 1) * width + x];
-            const dTR = grayBuffer[(y - 1) * width + (x + 1)];
-            const dML = grayBuffer[y * width + (x - 1)];
-            const dMR = grayBuffer[y * width + (x + 1)];
-            const dBL = grayBuffer[(y + 1) * width + (x - 1)];
-            const dBC = grayBuffer[(y + 1) * width + x];
-            const dBR = grayBuffer[(y + 1) * width + (x + 1)];
+            const dTL = smoothBuffer[(y - 1) * width + (x - 1)];
+            const dTC = smoothBuffer[(y - 1) * width + x];
+            const dTR = smoothBuffer[(y - 1) * width + (x + 1)];
+            const dML = smoothBuffer[y * width + (x - 1)];
+            const dMR = smoothBuffer[y * width + (x + 1)];
+            const dBL = smoothBuffer[(y + 1) * width + (x - 1)];
+            const dBC = smoothBuffer[(y + 1) * width + x];
+            const dBR = smoothBuffer[(y + 1) * width + (x + 1)];
 
             const dX = (dTR + 2 * dMR + dBR) - (dTL + 2 * dML + dBL);
             const dY = (dBL + 2 * dBC + dBR) - (dTL + 2 * dTC + dTR);

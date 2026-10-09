@@ -175,7 +175,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       const hasDrone = fileList.some(f => f.name.toLowerCase().includes('drone'));
       if (hasDrone) setSelectedCategoryId('drone');
       if (!hasChair && !hasShoe && !hasCamera && !hasDrone) {
-        setSelectedCategoryId('portrait_bust');
+        setSelectedCategoryId(hasPortrait ? 'portrait_bust' : 'neural_depth');
       }
     }
 

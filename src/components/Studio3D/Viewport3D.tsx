@@ -236,8 +236,8 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
             color: new THREE.Color(0xffffff), // Pure white so photo texture colors are 100% vibrant & bright
             map: neural.diffuseTexture,
             displacementMap: neural.depthTexture,
-            displacementScale: 0.38,
-            displacementBias: -0.04,
+            displacementScale: 0.16,
+            displacementBias: 0.0,
             normalMap: neural.normalTexture,
             normalScale: new THREE.Vector2(material.normalMapIntensity || 1.2, material.normalMapIntensity || 1.2),
             roughnessMap: neural.roughnessTexture,
@@ -249,7 +249,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
           materialRef.current = neuralFrontMat;
 
           const frontMesh = new THREE.Mesh(frontGeo, neuralFrontMat);
-          frontMesh.position.set(0, 0, volumetricDepth / 2);
+          frontMesh.position.set(0, 0, volumetricDepth / 2 - 0.02);
           frontMesh.castShadow = true;
           frontMesh.receiveShadow = true;
           mainGroup.add(frontMesh);
@@ -261,8 +261,8 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
             color: new THREE.Color(0xf4f0e6),
             map: neural.diffuseTexture,
             displacementMap: neural.depthTexture,
-            displacementScale: 0.28,
-            displacementBias: -0.03,
+            displacementScale: 0.12,
+            displacementBias: 0.0,
             normalMap: neural.normalTexture,
             normalScale: new THREE.Vector2(material.normalMapIntensity || 1.0, material.normalMapIntensity || 1.0),
             roughnessMap: neural.roughnessTexture,
@@ -407,10 +407,10 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
                 color: 0xffffff,
                 map: neural.diffuseTexture,
                 displacementMap: neural.depthTexture,
-                displacementScale: 0.35,
-                displacementBias: -0.02,
+                displacementScale: 0.16,
+                displacementBias: 0.0,
                 normalMap: neural.normalTexture,
-                normalScale: new THREE.Vector2(material.normalMapIntensity || 1.3, material.normalMapIntensity || 1.3),
+                normalScale: new THREE.Vector2(material.normalMapIntensity || 1.2, material.normalMapIntensity || 1.2),
                 roughnessMap: neural.roughnessTexture,
                 metalness: Math.min(0.2, material.metallic),
                 roughness: Math.max(0.28, material.roughness),
@@ -420,7 +420,7 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
               materialRef.current = neuralFrontMat;
 
               const frontMesh = new THREE.Mesh(frontGeo, neuralFrontMat);
-              frontMesh.position.set(0, yCenter, thickness / 2);
+              frontMesh.position.set(0, yCenter, thickness / 2 - 0.02);
               frontMesh.castShadow = true;
               frontMesh.receiveShadow = true;
               mainGroup.add(frontMesh);
@@ -448,32 +448,68 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
               backMesh.castShadow = true;
               mainGroup.add(backMesh);
 
-              // Hermetic Chamfered Casing (Left, Right, Top, Bottom) in Brushed Gold/Titanium
+              // Outer Casing Walls (enclosing all sides completely with ample depth)
               const casingMat = goldTrimMat;
+              const frameDepth = thickness + 0.10;
 
-              const leftGeo = new THREE.BoxGeometry(0.06, height, thickness);
+              const leftGeo = new THREE.BoxGeometry(0.08, height + 0.08, frameDepth);
               const leftWall = new THREE.Mesh(leftGeo, casingMat);
-              leftWall.position.set(-width / 2, yCenter, 0);
+              leftWall.position.set(-width / 2 - 0.02, yCenter, 0.01);
               leftWall.castShadow = true;
               mainGroup.add(leftWall);
 
-              const rightGeo = new THREE.BoxGeometry(0.06, height, thickness);
+              const rightGeo = new THREE.BoxGeometry(0.08, height + 0.08, frameDepth);
               const rightWall = new THREE.Mesh(rightGeo, casingMat);
-              rightWall.position.set(width / 2, yCenter, 0);
+              rightWall.position.set(width / 2 + 0.02, yCenter, 0.01);
               rightWall.castShadow = true;
               mainGroup.add(rightWall);
 
-              const topGeo = new THREE.BoxGeometry(width + 0.06, 0.06, thickness);
+              const topGeo = new THREE.BoxGeometry(width + 0.12, 0.08, frameDepth);
               const topWall = new THREE.Mesh(topGeo, casingMat);
-              topWall.position.set(0, yCenter + height / 2, 0);
+              topWall.position.set(0, yCenter + height / 2 + 0.02, 0.01);
               topWall.castShadow = true;
               mainGroup.add(topWall);
 
-              const bottomGeo = new THREE.BoxGeometry(width + 0.06, 0.06, thickness);
+              const bottomGeo = new THREE.BoxGeometry(width + 0.12, 0.08, frameDepth);
               const bottomWall = new THREE.Mesh(bottomGeo, casingMat);
-              bottomWall.position.set(0, yCenter - height / 2, 0);
+              bottomWall.position.set(0, yCenter - height / 2 - 0.02, 0.01);
               bottomWall.castShadow = true;
               mainGroup.add(bottomWall);
+
+              // Front Bezel Lip (Cadre passe-partout de luxe) - frames the image edges seamlessly
+              const bezelLipThickness = 0.03;
+              const frontLipZ = thickness / 2 + 0.05;
+
+              // Left Front Lip
+              const leftLipGeo = new THREE.BoxGeometry(0.08, height + 0.08, bezelLipThickness);
+              const leftLip = new THREE.Mesh(leftLipGeo, casingMat);
+              leftLip.position.set(-width / 2 - 0.01, yCenter, frontLipZ);
+              mainGroup.add(leftLip);
+
+              // Right Front Lip
+              const rightLipGeo = new THREE.BoxGeometry(0.08, height + 0.08, bezelLipThickness);
+              const rightLip = new THREE.Mesh(rightLipGeo, casingMat);
+              rightLip.position.set(width / 2 + 0.01, yCenter, frontLipZ);
+              mainGroup.add(rightLip);
+
+              // Top Front Lip
+              const topLipGeo = new THREE.BoxGeometry(width + 0.10, 0.08, bezelLipThickness);
+              const topLip = new THREE.Mesh(topLipGeo, casingMat);
+              topLip.position.set(0, yCenter + height / 2 + 0.01, frontLipZ);
+              mainGroup.add(topLip);
+
+              // Bottom Front Lip
+              const bottomLipGeo = new THREE.BoxGeometry(width + 0.10, 0.08, bezelLipThickness);
+              const bottomLip = new THREE.Mesh(bottomLipGeo, casingMat);
+              bottomLip.position.set(0, yCenter - height / 2 - 0.01, frontLipZ);
+              mainGroup.add(bottomLip);
+
+              // Solid Pedestal Support Bracket (Scelle l'espace entre le bas du monolithe et le socle)
+              const bracketGeo = new THREE.BoxGeometry(Math.min(width * 0.9, 1.8), 0.18, frameDepth * 1.15);
+              const bracketMesh = new THREE.Mesh(bracketGeo, casingMat);
+              bracketMesh.position.set(0, yCenter - height / 2 - 0.08, 0.01);
+              bracketMesh.castShadow = true;
+              mainGroup.add(bracketMesh);
 
               // 4 Smooth Rounded Corner Pillars
               [
@@ -482,10 +518,10 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
                 [-width / 2, yCenter - height / 2],
                 [width / 2, yCenter - height / 2],
               ].forEach(([cx, cy]) => {
-                const pillarGeo = new THREE.CylinderGeometry(0.04, 0.04, thickness, 16);
+                const pillarGeo = new THREE.CylinderGeometry(0.04, 0.04, frameDepth, 16);
                 pillarGeo.rotateX(Math.PI / 2);
                 const pillar = new THREE.Mesh(pillarGeo, casingMat);
-                pillar.position.set(cx, cy, 0);
+                pillar.position.set(cx, cy, 0.01);
                 mainGroup.add(pillar);
               });
             }).catch((err) => {
