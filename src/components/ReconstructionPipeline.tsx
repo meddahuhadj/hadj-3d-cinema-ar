@@ -193,7 +193,13 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
       let category: 'vehicle' | 'product' | 'object' = 'product';
       let colorTint = '#ffffff';
 
-      if (fileName.includes('rolls') || fileName.includes('cullinan') || fileName.includes('car') || fileName.includes('voiture') || fileName.includes('suv') || fileName.includes('auto')) {
+      const isPortraitPerson = fileName.includes('meddahi') || fileName.includes('hadj') || fileName.includes('cv') || fileName.includes('portrait') || fileName.includes('visage') || fileName.includes('homme') || fileName.includes('person') || fileName.includes('avatar') || fileName.includes('selfie') || (!fileName.includes('rolls') && !fileName.includes('car') && !fileName.includes('congelateur') && !fileName.includes('freezer') && !fileName.includes('chair') && !fileName.includes('chaise') && !fileName.includes('shoe') && !fileName.includes('drone'));
+
+      if (isPortraitPerson) {
+        modelTitle = (formattedTitle && !formattedTitle.includes('Modèle') && !formattedTitle.includes('Reconstruit')) ? formattedTitle : 'Buste Portrait 3D — Hadj Meddahi';
+        category = 'object';
+        colorTint = '#ffffff';
+      } else if (fileName.includes('rolls') || fileName.includes('cullinan') || fileName.includes('car') || fileName.includes('voiture') || fileName.includes('suv') || fileName.includes('auto')) {
         modelTitle = formattedTitle || 'Véhicule 3D';
         category = 'vehicle';
         colorTint = '#ffffff';
@@ -239,12 +245,13 @@ export const ReconstructionPipeline: React.FC<ReconstructionPipelineProps> = ({ 
           const userPhotoUrl = activePhoto ? activePhoto.url : (activeModel?.userImageUrl || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600');
 
           const chosenProcedural = activeModel?.proceduralType || 
-            (fileName.includes('rolls') || fileName.includes('cullinan') || fileName.includes('car') || fileName.includes('suv') ? 'rolls_royce' :
+            (isPortraitPerson ? 'portrait_bust' :
+             fileName.includes('rolls') || fileName.includes('cullinan') || fileName.includes('car') || fileName.includes('suv') ? 'rolls_royce' :
              fileName.includes('chaise') || fileName.includes('chair') || fileName.includes('fauteuil') ? 'executive_chair' :
              fileName.includes('congelateur') || fileName.includes('freezer') || fileName.includes('sharbo') ? 'chest_freezer' :
              fileName.includes('shoe') || fileName.includes('sneaker') || fileName.includes('basket') ? 'sneaker' :
-             fileName.includes('camera') || fileName.includes('photo') ? 'camera' :
-             fileName.includes('drone') ? 'drone' : 'chest_freezer');
+             fileName.includes('camera') ? 'camera' :
+             fileName.includes('drone') ? 'drone' : 'portrait_bust');
 
           const fallbackModel: Model3DData = {
             id: 'cine-' + Date.now(),

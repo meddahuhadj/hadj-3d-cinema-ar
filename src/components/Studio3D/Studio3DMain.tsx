@@ -42,6 +42,8 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
   const [animation, setAnimation] = useState<AnimationSettings>(modelData.animation);
 
   const templateOptions = [
+    { id: 'portrait_bust', label: 'Buste Portrait 3D Pro', icon: '👤', proceduralType: 'portrait_bust', modelUrl: undefined, polyCount: 96000 },
+    { id: 'astronaut', label: 'Avatar Humain (GLB)', icon: '👨‍🚀', proceduralType: 'camera', modelUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb', polyCount: 160000 },
     { id: 'chest_freezer', label: 'Congélateur 150L', icon: '🧊', proceduralType: 'chest_freezer', modelUrl: undefined, polyCount: 98000 },
     { id: 'executive_chair', label: 'Fauteuil Cuir', icon: '💺', proceduralType: 'executive_chair', modelUrl: undefined, polyCount: 125000 },
     { id: 'rolls_royce', label: 'Rolls-Royce SUV', icon: '🚗', proceduralType: 'rolls_royce', modelUrl: undefined, polyCount: 168000 },
@@ -55,7 +57,7 @@ export const Studio3DMain: React.FC<Studio3DMainProps> = ({
     if (opt.modelUrl && modelData.modelUrl === opt.modelUrl) return true;
     if (!modelData.modelUrl && opt.proceduralType === modelData.proceduralType) return true;
     return false;
-  })?.id || (modelData.proceduralType === 'freezer' ? 'chest_freezer' : modelData.proceduralType === 'chair' ? 'executive_chair' : modelData.proceduralType === 'car' ? 'rolls_royce' : 'neural_depth');
+  })?.id || (modelData.proceduralType === 'portrait_bust' || modelData.proceduralType === 'avatar' ? 'portrait_bust' : modelData.proceduralType === 'freezer' ? 'chest_freezer' : modelData.proceduralType === 'chair' ? 'executive_chair' : modelData.proceduralType === 'car' ? 'rolls_royce' : 'portrait_bust');
 
   const handleSelectTemplate = (opt: typeof templateOptions[0]) => {
     if (onUpdateModel) {

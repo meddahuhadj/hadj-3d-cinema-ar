@@ -325,9 +325,146 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
         });
       } else {
         // Build procedural 3D model according to model category / type
-        const type = modelData.proceduralType || 'sneaker';
+        const type = modelData.proceduralType || 'portrait_bust';
         
-        if (type === 'sneaker') {
+        if (type === 'portrait_bust' || type === 'avatar' || type === 'sculpture' || type === 'cyberhead') {
+          // ==========================================================
+          // BUSTE 3D PORTRAIT & AVATAR STUDIO HAUTE FIDÉLITÉ (VIP / PRO)
+          // ==========================================================
+          const suitMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(material.colorTint && material.colorTint !== '#ffffff' && material.colorTint !== '#d4af37' ? material.colorTint : '#18243b'),
+            roughness: 0.75,
+            metalness: 0.1,
+            wireframe: viewMode === 'wireframe' || material.wireframe
+          });
+
+          const shirtMat = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 0.35,
+            metalness: 0.05
+          });
+
+          const tieMat = new THREE.MeshStandardMaterial({
+            color: 0x1d3557,
+            roughness: 0.3,
+            metalness: 0.25
+          });
+
+          const marblePedestalMat = new THREE.MeshStandardMaterial({
+            color: 0x181512,
+            roughness: 0.2,
+            metalness: 0.4
+          });
+
+          const goldTrimMat = new THREE.MeshStandardMaterial({
+            color: 0xd4af37,
+            roughness: 0.25,
+            metalness: 0.85
+          });
+
+          const skinMat = new THREE.MeshStandardMaterial({
+            color: 0xe0c8b0,
+            roughness: 0.55,
+            metalness: 0.05
+          });
+
+          // 1. Socle Piédestal de Musée Contemporain (Base)
+          const baseGeo = new THREE.CylinderGeometry(0.85, 0.95, 0.22, 32);
+          const baseMesh = new THREE.Mesh(baseGeo, marblePedestalMat);
+          baseMesh.position.set(0, -1.35, 0);
+          baseMesh.castShadow = true;
+          mainGroup.add(baseMesh);
+
+          // Bague Dorée de transition
+          const goldRingGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.06, 32);
+          const goldRing = new THREE.Mesh(goldRingGeo, goldTrimMat);
+          goldRing.position.set(0, -1.21, 0);
+          mainGroup.add(goldRing);
+
+          // Colonne Piédestal
+          const stemGeo = new THREE.CylinderGeometry(0.35, 0.42, 0.35, 32);
+          const stemMesh = new THREE.Mesh(stemGeo, marblePedestalMat);
+          stemMesh.position.set(0, -1.02, 0);
+          stemMesh.castShadow = true;
+          mainGroup.add(stemMesh);
+
+          // Plaque Nominative Dorée
+          const plaqueGeo = new THREE.BoxGeometry(0.72, 0.14, 0.04);
+          const plaqueMesh = new THREE.Mesh(plaqueGeo, goldTrimMat);
+          plaqueMesh.position.set(0, -1.35, 0.91);
+          mainGroup.add(plaqueMesh);
+
+          // 2. Torse en Veste de Costume Bleu Marine (Buste)
+          const torsoGeo = new THREE.BoxGeometry(2.0, 0.85, 0.95);
+          const torsoMesh = new THREE.Mesh(torsoGeo, suitMat);
+          torsoMesh.position.set(0, -0.5, 0);
+          torsoMesh.castShadow = true;
+          mainGroup.add(torsoMesh);
+
+          // Revers de veste gauche et droit (Lapels)
+          [-0.32, 0.32].forEach((xPos, idx) => {
+            const lapelGeo = new THREE.BoxGeometry(0.26, 0.68, 0.08);
+            lapelGeo.rotateZ(idx === 0 ? Math.PI / 16 : -Math.PI / 16);
+            const lapelMesh = new THREE.Mesh(lapelGeo, suitMat);
+            lapelMesh.position.set(xPos, -0.42, 0.51);
+            mainGroup.add(lapelMesh);
+          });
+
+          // Col de chemise blanche
+          const shirtGeo = new THREE.BoxGeometry(0.55, 0.28, 0.15);
+          const shirtMesh = new THREE.Mesh(shirtGeo, shirtMat);
+          shirtMesh.position.set(0, -0.22, 0.46);
+          mainGroup.add(shirtMesh);
+
+          // Cravate bleue
+          const tieGeo = new THREE.BoxGeometry(0.18, 0.62, 0.06);
+          const tieMesh = new THREE.Mesh(tieGeo, tieMat);
+          tieMesh.position.set(0, -0.5, 0.52);
+          mainGroup.add(tieMesh);
+
+          // 3. Cou Anatomique
+          const neckGeo = new THREE.CylinderGeometry(0.28, 0.34, 0.4, 32);
+          const neckMesh = new THREE.Mesh(neckGeo, skinMat);
+          neckMesh.position.set(0, -0.05, 0);
+          neckMesh.castShadow = true;
+          mainGroup.add(neckMesh);
+
+          // 4. Crâne & Tête Anatomique 3D
+          const headGeo = new THREE.SphereGeometry(0.62, 32, 32);
+          headGeo.scale(0.92, 1.15, 1.05);
+          const headMesh = new THREE.Mesh(headGeo, skinMat);
+          headMesh.position.set(0, 0.52, 0);
+          headMesh.castShadow = true;
+          mainGroup.add(headMesh);
+
+          // Menton et Mâchoire
+          const jawGeo = new THREE.BoxGeometry(0.52, 0.32, 0.48);
+          const jawMesh = new THREE.Mesh(jawGeo, skinMat);
+          jawMesh.position.set(0, 0.22, 0.18);
+          mainGroup.add(jawMesh);
+
+          // 5. Masque Facial & Portrait Photo HD en Relief
+          const userPhoto = modelData.userImageUrl || modelData.thumbnail;
+          if (userPhoto) {
+            const texLoader = new THREE.TextureLoader();
+            texLoader.load(userPhoto, (tex) => {
+              tex.colorSpace = THREE.SRGBColorSpace;
+              const faceGeo = new THREE.PlaneGeometry(1.22, 1.62, 64, 64);
+              const faceMat = new THREE.MeshStandardMaterial({
+                map: tex,
+                roughness: 0.4,
+                metalness: 0.1,
+                bumpMap: tex,
+                bumpScale: 0.04,
+                side: THREE.FrontSide
+              });
+              const faceMesh = new THREE.Mesh(faceGeo, faceMat);
+              faceMesh.position.set(0, 0.35, 0.52);
+              faceMesh.castShadow = true;
+              mainGroup.add(faceMesh);
+            });
+          }
+        } else if (type === 'sneaker') {
       // High-Fidelity Cyberpunk Sneaker 3D Assembly
       const soleMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.15, metalness: 0.1 });
       const upperMat = meshMaterial;
@@ -550,23 +687,6 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
       const panelMesh = new THREE.Mesh(panelGeo, panelMat);
       panelMesh.position.set(0.4, 0.1, 0.66);
       mainGroup.add(panelMesh);
-
-      // User photo texture mapped to the front of the freezer
-      if (modelData.userImageUrl) {
-        const texLoader = new THREE.TextureLoader();
-        texLoader.load(modelData.userImageUrl, (tex) => {
-          tex.colorSpace = THREE.SRGBColorSpace;
-          const photoDecalGeo = new THREE.PlaneGeometry(1.5, 0.9);
-          const photoDecalMat = new THREE.MeshStandardMaterial({
-            map: tex,
-            roughness: 0.25,
-            metalness: 0.1,
-          });
-          const photoDecal = new THREE.Mesh(photoDecalGeo, photoDecalMat);
-          photoDecal.position.set(-0.25, 0.05, 0.655);
-          mainGroup.add(photoDecal);
-        });
-      }
 
       // 6. Bottom Rubber Corner Feet (Pieds de soutien)
       [[-1.05, 1.05], [1.05, 1.05], [-1.05, -1.05], [1.05, -1.05]].forEach(pos => {

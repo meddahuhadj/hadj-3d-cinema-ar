@@ -19,13 +19,20 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 }) => {
   const [dragActive, setDragActive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('chest_freezer');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('portrait_bust');
   const [primaryIndex, setPrimaryIndex] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileInputAppendRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
 
   const targetCategories = [
+    {
+      id: 'portrait_bust',
+      title: 'Buste & Portrait 3D Studio (VIP & Pro)',
+      subtitle: 'Portrait Humain / Avatar & Statut 3D',
+      icon: '👤',
+      modelPreset: undefined
+    },
     {
       id: 'rolls_royce',
       title: 'Rolls-Royce Cullinan Black Badge',
@@ -103,7 +110,28 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       fileInputRef.current.value = '';
     }
 
-    // Intelligent AI Filename Detection
+    // Intelligent AI Filename & Subject Detection
+    const hasPortrait = fileList.some(f => {
+      const name = f.name.toLowerCase();
+      return (
+        name.includes('meddahi') ||
+        name.includes('hadj') ||
+        name.includes('cv') ||
+        name.includes('portrait') ||
+        name.includes('photo') ||
+        name.includes('profil') ||
+        name.includes('face') ||
+        name.includes('visage') ||
+        name.includes('homme') ||
+        name.includes('man') ||
+        name.includes('person') ||
+        name.includes('avatar') ||
+        name.includes('selfie') ||
+        name.includes('identite') ||
+        name.includes('passport')
+      );
+    });
+
     const hasCar = fileList.some(f => {
       const name = f.name.toLowerCase();
       return (
@@ -127,15 +155,13 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
         name.includes('freezer') ||
         name.includes('frigo') ||
         name.includes('refrigerator') ||
-        name.includes('150l') ||
-        name.includes('facilitedz') ||
-        name.includes('adrar') ||
-        name.includes('taksit') ||
-        name.includes('dz')
+        name.includes('150l')
       );
     });
 
-    if (hasCar) {
+    if (hasPortrait) {
+      setSelectedCategoryId('portrait_bust');
+    } else if (hasCar) {
       setSelectedCategoryId('rolls_royce');
     } else if (hasFreezer) {
       setSelectedCategoryId('chest_freezer');
@@ -144,10 +170,13 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       if (hasChair) setSelectedCategoryId('executive_chair');
       const hasShoe = fileList.some(f => f.name.toLowerCase().includes('shoe') || f.name.toLowerCase().includes('sneaker') || f.name.toLowerCase().includes('basket'));
       if (hasShoe) setSelectedCategoryId('sneaker');
-      const hasCamera = fileList.some(f => f.name.toLowerCase().includes('camera') || f.name.toLowerCase().includes('photo'));
+      const hasCamera = fileList.some(f => f.name.toLowerCase().includes('camera'));
       if (hasCamera) setSelectedCategoryId('camera');
       const hasDrone = fileList.some(f => f.name.toLowerCase().includes('drone'));
       if (hasDrone) setSelectedCategoryId('drone');
+      if (!hasChair && !hasShoe && !hasCamera && !hasDrone) {
+        setSelectedCategoryId('portrait_bust');
+      }
     }
 
     if (append) {
@@ -162,15 +191,19 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 
   const handleProceed = () => {
     const activePhoto = photos[primaryIndex] || photos[0];
-    let cleanTitle = 'Objet / Produit 3D Reconstruit';
+    let cleanTitle = 'Buste Portrait 3D — Hadj Meddahi';
     if (activePhoto) {
       const rawName = activePhoto.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-      cleanTitle = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+      if (rawName.toLowerCase().includes('cv') || rawName.toLowerCase().includes('meddahi') || rawName.toLowerCase().includes('hadj')) {
+        cleanTitle = 'Buste Portrait 3D — Hadj Meddahi';
+      } else {
+        cleanTitle = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+      }
     }
 
     const activePhotoUrl = activePhoto ? activePhoto.url : 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80';
 
-    const activeCatId = selectedCategoryId || 'chest_freezer';
+    const activeCatId = selectedCategoryId || 'portrait_bust';
     const targetCat = targetCategories.find(c => c.id === activeCatId);
     const chosenModelUrl = targetCat?.modelPreset?.modelUrl;
 
